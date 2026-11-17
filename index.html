@@ -4,7 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <title>Larc en Pet · Memorial de mascotas</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%90%BE%3C/text%3E%3C/svg%3E">
+<meta name="description" content="Memorial virtual para mascotas: visita su lugar, enciéndele una velita, deja flores y mensajes, y recuerda junto a otros.">
+<meta name="theme-color" content="#fbf3e6">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Larc en Pet">
+<meta property="og:title" content="Larc en Pet · Memorial para mascotas">
+<meta property="og:description" content="Visita su lugar, enciéndele una velita y recuerda junto a otros. 🕯️💛">
+<meta property="og:image" content="https://jeanmunoz402-jpg.github.io/larc-en-pet/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://jeanmunoz402-jpg.github.io/larc-en-pet/">
+<meta property="og:locale" content="es_CL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Larc en Pet · Memorial para mascotas">
+<meta name="twitter:description" content="Visita su lugar, enciéndele una velita y recuerda junto a otros.">
+<meta name="twitter:image" content="https://jeanmunoz402-jpg.github.io/larc-en-pet/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -200,6 +216,11 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
 .ptab.sel{background:linear-gradient(180deg,#fff4d9,#ffe2a6);border-color:var(--gold2);color:#5a3a12}
 .ptab-body{animation:up .2s ease-out}
 .dates{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:#6b4a3a;font-weight:700;margin:4px 0 0}
+.nets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:6px}.net{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:14px;font:700 14px Nunito,sans-serif;text-decoration:none;color:#fff;border:0;cursor:pointer;padding:6px}.net.wa{background:#1f8f4e}.net.fb{background:#1b5fc4}.net.x{background:#1d1b1a}.net.tg{background:#1f7fb8}.net.ml{background:#8a5a3a}.net.cp{background:#f3e8da;color:#4a3029}
+.linkrow{margin-top:10px}.linkrow input{width:100%;font-size:13px;color:#6e5850}
+.cardimg.story{max-height:420px;width:auto;display:block;margin:0 auto}
+.howto{background:#fff7ea;border:1px solid #f1dfc3;border-radius:16px;padding:12px 14px;margin-top:12px;font-size:13.5px;color:#5a423b}.howto b{color:#6b3f1d}.howto ol{margin:6px 0 0;padding-left:20px}.howto li{margin:3px 0}
+.socialform{display:grid;gap:4px}.psocial{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.mini.soc{text-decoration:none;font-size:12.5px}
 .daily{background:#fff7ea;border:1px solid #f1dfc3;border-radius:16px;padding:10px 12px;margin:2px 0 10px}.daily .dhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}.daily .dhead b{color:#6b3f1d;font-size:14px}.daily .dhead small{color:#7a6058;font-size:12.5px}.daily .dchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.daily .dchips span{font-size:13px;padding:5px 10px;border-radius:999px;background:#f3e8da;color:#6e5850}.daily .dchips span.ok{background:#fbe2b0;color:#5b3a16;font-weight:700}.done{filter:saturate(.35);opacity:.8;cursor:default}
 .candlebtn{width:100%;padding:15px;font-size:17px;margin:4px 0 10px}
 .ptab-body > .ghost{width:100%;margin-top:4px}
@@ -495,6 +516,7 @@ async function initBackend(){
 }
 function writeError(e){
   if (e && e.code === 'taken') return toast('Alguien acaba de ocupar este lugar. Elige otro.');
+  if (e && e.code === 'social') return toast(`Revisa el ${e.label}: escribe el @usuario o pega el enlace del perfil.`);
   if (e && e.code === 'daily') return toast(`Hoy ya dejaste esto en este memorial. Vuelve en ${untilTomorrow()} 💛`);
   if (e && e.code === 'invalid_argument') { S.readonly = true; return toast('Puedes visitar, pero no escribir. Pide al dueño acceso de Colaborador.'); }
   if (e && e.code === 'quota_exceeded') return toast('El memorial llegó a su capacidad máxima.');
@@ -1948,6 +1970,7 @@ function openCreate(idx){
     epitaph: el('textarea', {maxlength: 160, placeholder: 'Una frase para recordarle (opcional)'}),
     by: el('input', {maxlength: 40, placeholder: 'Tu nombre (opcional)', value: authorName()}),
   };
+  const sf = socialFields(null);
   const prev = el('div', {class: 'portrait'}, '🐾');
   const file = el('input', {type: 'file', accept: 'image/*', style: 'display:none', on: {change: async () => {
     const fl = file.files[0]; if (!fl) return;
@@ -1959,8 +1982,8 @@ function openCreate(idx){
     store.set('aac-name', f.by.value.trim().slice(0, 40));
     save.disabled = true; save.textContent = 'Colgando su foto…';
     try {
-      const bdate = f.bdate.value, ddate = f.ddate.value;
-      await S.backend.createPet(idx, {name, species: f.species.value, born: f.born.value.trim() || (bdate ? bdate.slice(0, 4) : ''), died: f.died.value.trim() || (ddate ? ddate.slice(0, 4) : ''), bdate, ddate, epitaph: cleanText(f.epitaph.value, 160), photo, by: f.by.value.trim(), at: Date.now(), owner: myUid()});
+      const bdate = f.bdate.value, ddate = f.ddate.value, soc = socialValues(sf);
+      await S.backend.createPet(idx, {...soc, name, species: f.species.value, born: f.born.value.trim() || (bdate ? bdate.slice(0, 4) : ''), died: f.died.value.trim() || (ddate ? ddate.slice(0, 4) : ''), bdate, ddate, epitaph: cleanText(f.epitaph.value, 160), photo, by: f.by.value.trim(), at: Date.now(), owner: myUid()});
       closeModal(); toast(`La foto de ${name} ya está en la pared ✨`);
     } catch (e) { writeError(e); save.disabled = false; save.textContent = 'Colgar su foto'; }
   }}}, 'Colgar su foto');
@@ -1973,6 +1996,7 @@ function openCreate(idx){
     el('details', {class: 'more'}, el('summary', {}, '🎂 Agregar fechas exactas (opcional)'),
       el('div', {class: 'row2'}, el('div', {}, el('label', {}, 'Nacimiento'), f.bdate), el('div', {}, el('label', {}, 'Partida'), f.ddate)),
       el('p', {class: 'muted', style: 'margin:6px 0 0;font-size:12.5px'}, 'Su lugar brillará especialmente en su cumpleaños y en el aniversario de su partida.')),
+    el('details', {class: 'more'}, el('summary', {}, '📱 Sus redes sociales (opcional)'), el('p', {class: 'muted', style: 'margin:6px 0 0;font-size:12.5px'}, 'Si tu mascota tenía una cuenta, quienes la visiten podrán ir a verla.'), socialBlock(sf)),
     el('label', {}, 'Unas palabras'), f.epitaph, el('label', {}, 'Creado por'), f.by, save,
   ]);
 }
@@ -2290,7 +2314,8 @@ function setupDbChat(db){
 // ---------- Supabase backend ----------
 function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.append(s); }); }
 function dataUrlToBlob(u){ const [h, b] = u.split(','); const bin = atob(b); const a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return new Blob([a], {type: (h.match(/data:(.*?);/) || [])[1] || 'image/jpeg'}); }
-const missingCol = e => e && (e.code === '42703' || e.code === 'PGRST204' || /birth_date|death_date/.test(e.message || ''));
+const missingCol = e => e && (e.code === '42703' || e.code === 'PGRST204' || /birth_date|death_date|instagram|tiktok|facebook/.test(e.message || ''));
+const missingWhich = e => /instagram|tiktok|facebook/.test((e && e.message) || '') ? 'noSocial' : 'noDates';
 const sbErr = e => { if (!e) return e; if (/daily_limit/.test(e.message || '')) return {code: 'daily'}; if (e.code === '23505') return {code: 'taken'}; if (e.code === '42501' || /row-level security|JWT|not authorized/i.test(e.message || '')) return {code: 'auth'}; return e; };
 async function setupSupabase(){
   if (!window.supabase) await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
@@ -2298,7 +2323,7 @@ async function setupSupabase(){
   S.sb = sb;
   const {data: {session}} = await sb.auth.getSession(); S.user = session ? session.user : null;
   sb.auth.onAuthStateChange((_e, sess) => { S.user = sess ? sess.user : null; afterAuth(); });
-  const toPet = r => cleanPet('p' + r.idx, {name: r.name, species: r.species, born: r.born, died: r.died, epitaph: r.epitaph, photo: r.photo_url || '', by: r.by_name, at: Date.parse(r.created_at) || 0, owner: r.owner, bdate: r.birth_date, ddate: r.death_date});
+  const toPet = r => cleanPet('p' + r.idx, {name: r.name, species: r.species, born: r.born, died: r.died, epitaph: r.epitaph, photo: r.photo_url || '', by: r.by_name, at: Date.parse(r.created_at) || 0, owner: r.owner, bdate: r.birth_date, ddate: r.death_date, ig: r.instagram, tt: r.tiktok, fb: r.facebook});
   const toMem = r => cleanMem({pet: r.pet_id, text: r.text, photo: r.photo_url || '', author: r.author, uid: r.user_id, at: Date.parse(r.created_at) || 0}, r.id);
   const toSvc = r => cleanService({cat: r.category, name: r.name, desc: r.description, city: r.city, url: r.url, phone: r.phone, featured: r.featured, at: Date.parse(r.created_at) || 0}, r.id);
   async function loadMems(){ const {data} = await sb.from('memories').select('*').order('created_at', {ascending: false}).limit(800); if (data) setMemories(data.map(toMem)); }
@@ -2359,10 +2384,11 @@ async function setupSupabase(){
       }
       const base = {name: v.name, species: v.species, born: v.born, died: v.died, epitaph: v.epitaph, photo_url, by_name: v.by || null};
       const dates = {birth_date: v.bdate || null, death_date: v.ddate || null};
+      const social = {instagram: v.ig || null, tiktok: v.tt || null, facebook: v.fb || null};
       let error, tries = 0;
-      while (tries++ < 6) {
-        ({error} = await sb.from('pets').insert(S.noDates ? {idx, ...base} : {idx, ...base, ...dates}));
-        if (error && missingCol(error)) { S.noDates = true; continue; }
+      while (tries++ < 8) {
+        ({error} = await sb.from('pets').insert({idx, ...base, ...(S.noDates ? {} : dates), ...(S.noSocial ? {} : social)}));
+        if (error && missingCol(error)) { S[missingWhich(error)] = true; continue; }
         if (error && error.code === '23505') { await loadPets(); idx = firstFree(); v.newIdx = idx; continue; }
         break;
       }
@@ -2373,9 +2399,14 @@ async function setupSupabase(){
       needUser();
       const row = {name: f.name, species: f.species, born: f.born, died: f.died, epitaph: f.epitaph};
       if (!S.noDates) Object.assign(row, {birth_date: f.bdate || null, death_date: f.ddate || null});
+      if (!S.noSocial) Object.assign(row, {instagram: f.ig || null, tiktok: f.tt || null, facebook: f.fb || null});
       if (f.photo && f.photo.startsWith('data:')) row.photo_url = await uploadPhoto(f.photo);
       let {error} = await sb.from('pets').update(row).eq('idx', idx);
-      if (error && missingCol(error)) { S.noDates = true; delete row.birth_date; delete row.death_date; ({error} = await sb.from('pets').update(row).eq('idx', idx)); }
+      for (let i = 0; i < 2 && error && missingCol(error); i++) {
+        const w = missingWhich(error); S[w] = true;
+        if (w === 'noDates') { delete row.birth_date; delete row.death_date; } else { delete row.instagram; delete row.tiktok; delete row.facebook; }
+        ({error} = await sb.from('pets').update(row).eq('idx', idx));
+      }
       if (error) throw sbErr(error); await loadPets();
     },
     async addMemory(pet, m){ needUser(); const photo_url = m.photo ? await uploadPhoto(m.photo) : null; const {error} = await sb.from('memories').insert({pet_id: pet, text: m.text || null, photo_url, author: m.author || null}); if (error) throw sbErr(error); await loadMems(); },
@@ -2494,7 +2525,31 @@ const SERVICE_CATS = {cremacion: '🕊️ Cremación y despedida', veterinaria: 
 S.memories = new Map(); S.services = []; S.requests = []; S.petTab = 'homenaje';
 const isDate = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
 const _cleanPetBase = cleanPet;
-cleanPet = function(id, v){ const p = _cleanPetBase(id, v); if (!p) return p; p.bdate = isDate(v.bdate) ? v.bdate : ''; p.ddate = isDate(v.ddate) ? v.ddate : ''; p.owner = str(v.owner, 64); return p; };
+cleanPet = function(id, v){ const p = _cleanPetBase(id, v); if (!p) return p; p.bdate = isDate(v.bdate) ? v.bdate : ''; p.ddate = isDate(v.ddate) ? v.ddate : ''; p.owner = str(v.owner, 64); p.ig = socialHandle(v.ig, 'ig'); p.tt = socialHandle(v.tt, 'tt'); p.fb = socialHandle(v.fb, 'fb'); return p; };
+// ---------- redes sociales de cada mascota ----------
+const SOCIAL = {
+  ig: {label: 'Instagram', re: /^[A-Za-z0-9._]{1,30}$/, url: h => 'https://www.instagram.com/' + h + '/', ph: '@usuario o enlace de Instagram'},
+  tt: {label: 'TikTok', re: /^[A-Za-z0-9._]{2,24}$/, url: h => 'https://www.tiktok.com/@' + h, ph: '@usuario o enlace de TikTok'},
+  fb: {label: 'Facebook', re: /^[A-Za-z0-9.\-]{3,60}$/, url: h => 'https://www.facebook.com/' + h, ph: 'Página o perfil de Facebook'},
+};
+function socialHandle(v, kind){
+  if (typeof v !== 'string') return '';
+  let h = v.trim();
+  const m = h.match(/^(?:https?:\/\/)?(?:www\.|m\.)?(?:instagram\.com|tiktok\.com|facebook\.com|fb\.com)\/(?:@)?([^/?#\s]+)/i);
+  if (m) h = m[1];
+  h = h.replace(/^@/, '');
+  return SOCIAL[kind] && SOCIAL[kind].re.test(h) && !/^(p|reel|share|profile\.php)$/i.test(h) ? h : '';
+}
+function socialFields(pet){
+  const f = {}; for (const k of Object.keys(SOCIAL)) f[k] = el('input', {maxlength: 120, placeholder: SOCIAL[k].ph, value: pet && pet[k] ? (k === 'fb' ? pet[k] : '@' + pet[k]) : '', autocapitalize: 'off', autocomplete: 'off', spellcheck: 'false'});
+  return f;
+}
+function socialBlock(f){ return el('div', {class: 'socialform'}, Object.keys(SOCIAL).map(k => el('div', {}, el('label', {}, SOCIAL[k].label), f[k]))); }
+function socialValues(f){ const out = {}; for (const k of Object.keys(SOCIAL)) { const raw = f[k].value.trim(); out[k] = socialHandle(raw, k); if (raw && !out[k]) throw {code: 'social', label: SOCIAL[k].label}; } return out; }
+function socialLinks(pet){
+  const ks = Object.keys(SOCIAL).filter(k => pet[k]); if (!ks.length) return null;
+  return el('div', {class: 'psocial'}, ks.map(k => el('a', {class: 'mini soc soc-' + k, href: SOCIAL[k].url(pet[k]), target: '_blank', rel: 'noopener noreferrer'}, SOCIAL[k].label + (k === 'fb' ? '' : ' · @' + pet[k]))));
+}
 function cleanMem(v, id){ if (!v || !/^p\d{1,6}$/.test(v.pet)) return null; const text = str(v.text, 600).trim(); const photo = typeof v.photo === 'string' && (v.photo.startsWith('data:image/') || (LARC.supabaseUrl && v.photo.startsWith(LARC.supabaseUrl + '/storage/v1/object/public/'))) ? v.photo : ''; if (!text && !photo) return null; return {id: String(id), pet: v.pet, text, photo, author: str(v.author, 40), uid: str(v.uid, 64), at: +v.at || 0}; }
 function cleanService(v, id){ if (!v || !SERVICE_CATS[v.cat] || !str(v.name, 80).trim()) return null; const url = typeof v.url === 'string' && /^https?:\/\/\S+$/i.test(v.url) ? v.url.slice(0, 300) : ''; return {id: String(id), cat: v.cat, name: str(v.name, 80), desc: str(v.desc, 400), city: str(v.city, 60), url, phone: str(v.phone, 40), featured: !!v.featured, at: +v.at || 0}; }
 function cleanReq(v, id){ if (!v || !str(v.name, 80).trim()) return null; return {id: String(id), cat: SERVICE_CATS[v.cat] ? v.cat : 'otros', name: str(v.name, 80), city: str(v.city, 60), contact: str(v.contact, 120), desc: str(v.desc, 600), at: +v.at || 0}; }
@@ -2561,7 +2616,8 @@ openPet = function(id){
         el('div', {class: 'pactions'},
           el('button', {class: 'mini', on: {click: () => openShare(pet)}}, '🔗 Compartir'),
           S.chat ? el('button', {class: 'mini', on: {click: () => { closeModal(); openChat(id); }}}, '💬 Conversar') : null,
-          mine ? el('button', {class: 'mini gold', on: {click: () => openEditPet(pet)}}, '✏️ Editar') : null)));
+          mine ? el('button', {class: 'mini gold', on: {click: () => openEditPet(pet)}}, '✏️ Editar') : null),
+        socialLinks(pet)));
     const banner = sp ? el('div', {class: 'special'}, el('span', {class: 'big', text: sp.emoji}), el('div', {}, el('b', {text: sp.text(sp.years)}), el('small', {}, 'Enciéndele una velita para acompañarle hoy.'))) : null;
     const tabs = el('div', {class: 'ptabs'}, tab('homenaje', '🕯️ Homenaje'), tab('recuerdos', `📷 Recuerdos${mems.length ? ' · ' + mems.length : ''}`), tab('libro', `💌 Libro${st.messages.length ? ' · ' + st.messages.length : ''}`));
     let body;
@@ -2653,14 +2709,16 @@ function openEditPet(pet){
     epitaph: el('textarea', {maxlength: 160}),
   };
   f.epitaph.value = pet.epitaph;
+  const sf = socialFields(pet);
   const prev = portrait(pet);
   const file = el('input', {type: 'file', accept: 'image/*', style: 'display:none', on: {change: async () => { const fl = file.files[0]; if (!fl) return; try { photo = await resizePhoto(fl); prev.replaceChildren(el('img', {src: photo, alt: 'Vista previa'})); } catch { toast('No se pudo leer esa imagen.'); } }}});
   const save = el('button', {class: 'btn', style: 'width:100%;margin-top:18px', on: {click: async () => {
     const name = f.name.value.trim(); if (!name) return toast('El nombre no puede quedar vacío.');
     const bdate = f.bdate.value, ddate = f.ddate.value;
+    let soc; try { soc = socialValues(sf); } catch (e) { return writeError(e); }
     save.disabled = true; save.textContent = 'Guardando…';
     try {
-      await S.backend.updatePet(parseInt(pet.id.slice(1)), {name, species: f.species.value, born: f.born.value.trim() || (bdate ? bdate.slice(0, 4) : ''), died: f.died.value.trim() || (ddate ? ddate.slice(0, 4) : ''), bdate, ddate, epitaph: cleanText(f.epitaph.value, 160), photo});
+      await S.backend.updatePet(parseInt(pet.id.slice(1)), {...soc, name, species: f.species.value, born: f.born.value.trim() || (bdate ? bdate.slice(0, 4) : ''), died: f.died.value.trim() || (ddate ? ddate.slice(0, 4) : ''), bdate, ddate, epitaph: cleanText(f.epitaph.value, 160), photo});
       toast('Memorial actualizado ✨'); openPet(pet.id);
     } catch (e) { writeError(e); save.disabled = false; save.textContent = 'Guardar cambios'; }
   }}}, 'Guardar cambios');
@@ -2672,21 +2730,33 @@ function openEditPet(pet){
     el('div', {class: 'row2'}, el('div', {}, el('label', {}, '🎂 Fecha de nacimiento'), f.bdate), el('div', {}, el('label', {}, '🌈 Fecha de partida'), f.ddate)),
     el('p', {class: 'muted', style: 'margin:6px 0 0;font-size:12.5px'}, 'Con las fechas exactas, su lugar brillará especialmente en su cumpleaños y en el aniversario de su partida.'),
     el('label', {}, 'Unas palabras'), f.epitaph,
+    el('label', {}, 'Sus redes sociales (opcional)'), socialBlock(sf),
     save,
     el('button', {class: 'link', style: 'display:block;margin:12px auto 0', on: {click: () => openPet(pet.id)}}, 'Volver sin guardar'),
   ]);
 }
 
 // ---------- share: link + memorial card ----------
-function shareLink(pet){ return location.href.split('#')[0] + '#m' + parseInt(pet.id.slice(1)); }
+function shareLink(pet){ return location.origin + location.pathname + '#m' + parseInt(pet.id.slice(1)); }
 function loadImage(src){ return new Promise(res => { if (!src) return res(null); const im = new Image(); if (/^https?:/.test(src)) im.crossOrigin = 'anonymous'; im.onload = () => res(im); im.onerror = () => res(null); im.src = src; }); }
-async function memorialCard(pet){
-  const [c, g] = canvas(1080, 1350);
-  let gr = g.createLinearGradient(0, 0, 0, 1350); gr.addColorStop(0, '#fff6e6'); gr.addColorStop(.55, '#fbe3d2'); gr.addColorStop(1, '#e7d6ef'); g.fillStyle = gr; g.fillRect(0, 0, 1080, 1350);
-  ['#ff9aa8', '#ffc48a', '#fff08f', '#a8e6a1', '#9fd3ff', '#c3a8ff'].forEach((col, i) => { g.strokeStyle = col; g.globalAlpha = .35; g.lineWidth = 22; g.beginPath(); g.arc(540, 1420, 760 - i * 22, Math.PI, 0); g.stroke(); });
+function drawLogo(g, x, y, size, arch = '#4a3029', paw = '#fbf3e6', halo = '#e6b45c'){
+  g.save(); g.translate(x - size / 2, y - size / 2); g.scale(size / 200, size / 200); g.translate(0, 6);
+  g.strokeStyle = halo; g.lineWidth = 8; g.beginPath(); g.ellipse(100, 24, 32, 8, 0, 0, Math.PI * 2); g.stroke();
+  g.fillStyle = arch; g.beginPath(); g.ellipse(66, 66, 14, 24, -Math.PI / 6, 0, Math.PI * 2); g.fill(); g.beginPath(); g.ellipse(134, 66, 14, 24, Math.PI / 6, 0, Math.PI * 2); g.fill();
+  g.beginPath(); g.moveTo(48, 190); g.lineTo(48, 108); g.arc(100, 108, 52, Math.PI, 0); g.lineTo(152, 190); g.closePath(); g.fill();
+  g.fillStyle = paw; g.beginPath(); g.ellipse(100, 154, 24, 19, 0, 0, Math.PI * 2); g.fill();
+  for (const [cx, cy, r] of [[72, 126, 9.5], [89, 110, 10], [111, 110, 10], [128, 126, 9.5]]) { g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fill(); }
+  g.restore();
+}
+async function memorialCard(pet, fmt = 'post'){
+  const H = fmt === 'story' ? 1920 : 1350, dy = fmt === 'story' ? 300 : 0;
+  const [c, g] = canvas(1080, H);
+  let gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#fff6e6'); gr.addColorStop(.55, '#fbe3d2'); gr.addColorStop(1, '#e7d6ef'); g.fillStyle = gr; g.fillRect(0, 0, 1080, H);
+  ['#ff9aa8', '#ffc48a', '#fff08f', '#a8e6a1', '#9fd3ff', '#c3a8ff'].forEach((col, i) => { g.strokeStyle = col; g.globalAlpha = .35; g.lineWidth = 22; g.beginPath(); g.arc(540, H + 70, 760 - i * 22, Math.PI, 0); g.stroke(); });
   g.globalAlpha = 1;
+  if (fmt === 'story') { g.textAlign = 'center'; g.fillStyle = '#9a6a4a'; g.font = '800 30px Nunito, sans-serif'; g.fillText('E N   M E M O R I A   D E', 540, 330); }
   // arch frame with photo
-  const ax = 540, top = 150, hw = 300, bot = 860;
+  const ax = 540, top = 150 + dy, hw = 300, bot = 860 + dy;
   const arch = () => { g.beginPath(); g.moveTo(ax - hw, bot); g.lineTo(ax - hw, top + hw); g.arc(ax, top + hw, hw, Math.PI, 0); g.lineTo(ax + hw, bot); g.closePath(); };
   g.save(); g.shadowColor = 'rgba(160,100,40,.35)'; g.shadowBlur = 40; arch(); g.fillStyle = '#fff'; g.fill(); g.restore();
   g.save(); arch(); g.clip();
@@ -2700,37 +2770,72 @@ async function memorialCard(pet){
   // text
   g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.fillStyle = '#6b3f1d';
   let size = 118; g.font = `700 ${size}px "Cormorant Garamond", Georgia, serif`; while (g.measureText(pet.name).width > 900 && size > 60) { size -= 4; g.font = `700 ${size}px "Cormorant Garamond", Georgia, serif`; }
-  g.fillText(pet.name, 540, 1000);
+  g.fillText(pet.name, 540, 1000 + dy);
   const dates = [pet.bdate ? fmtDay(pet.bdate) : pet.born, pet.ddate ? fmtDay(pet.ddate) : pet.died].filter(Boolean).join('  —  ');
-  if (dates) { g.font = '600 38px Nunito, sans-serif'; g.fillStyle = '#9a6a4a'; g.fillText(dates, 540, 1062); }
-  if (pet.epitaph) { g.font = 'italic 500 46px "Cormorant Garamond", Georgia, serif'; g.fillStyle = '#6b4a7a'; wrapText(g, '“' + pet.epitaph + '”', 860, 3).forEach((l, i) => g.fillText(l, 540, 1140 + i * 54)); }
-  g.font = '700 34px "Cormorant Garamond", Georgia, serif'; g.fillStyle = '#b07a3a'; g.fillText('L A R C   E N   P E T', 540, 1290);
-  g.font = '600 26px Nunito, sans-serif'; g.fillStyle = '#9a7a6a'; g.fillText('Enciéndele una velita · ' + location.host + location.pathname.replace(/\/$/, ''), 540, 1326);
+  if (dates) { g.font = '600 38px Nunito, sans-serif'; g.fillStyle = '#9a6a4a'; g.fillText(dates, 540, 1062 + dy); }
+  if (pet.epitaph) { g.font = 'italic 500 46px "Cormorant Garamond", Georgia, serif'; g.fillStyle = '#6b4a7a'; wrapText(g, '“' + pet.epitaph + '”', 860, 3).forEach((l, i) => g.fillText(l, 540, 1140 + dy + i * 54)); }
+  if (fmt === 'story') {
+    g.fillStyle = '#e6b45c'; g.beginPath(); g.roundRect ? g.roundRect(240, 1600, 600, 96, 48) : g.rect(240, 1600, 600, 96); g.fill();
+    g.fillStyle = '#4a3029'; g.font = '800 36px Nunito, sans-serif'; g.fillText('Visítale y enciéndele una velita', 540, 1661);
+    drawLogo(g, 540, 1770, 70); g.font = '700 34px "Cormorant Garamond", Georgia, serif'; g.fillStyle = '#6b3f1d'; g.fillText('Larc en Pet', 540, 1850);
+  } else {
+    drawLogo(g, 540, 1262, 54);
+    g.font = '600 26px Nunito, sans-serif'; g.fillStyle = '#9a7a6a'; g.fillText('Larc en Pet · enciéndele una velita · ' + location.host + location.pathname.replace(/\/$/, ''), 540, 1326);
+  }
   return c;
 }
 function openShare(pet){
   const link = shareLink(pet);
-  const linkIn = el('input', {value: link, readonly: true, on: {focus: e => e.target.select()}});
-  const cardBox = el('div', {class: 'cardbox'}, el('p', {class: 'muted', style: 'margin:0'}, 'Creando la tarjeta…'));
+  const msg = `Te invito a visitar a ${pet.name} en Larc en Pet y encenderle una velita 🕯️💛`;
+  const enc = encodeURIComponent;
+  const copy = async (txt, ok = 'Enlace copiado 📋') => { try { await navigator.clipboard.writeText(txt); toast(ok); return true; } catch { prompt('Copia el enlace:', txt); return false; } };
+  const net = (cls, label, href) => el('a', {class: 'net ' + cls, href, target: '_blank', rel: 'noopener noreferrer'}, label);
+  const nets = el('div', {class: 'nets'},
+    net('wa', 'WhatsApp', 'https://wa.me/?text=' + enc(msg + ' ' + link)),
+    net('fb', 'Facebook', 'https://www.facebook.com/sharer/sharer.php?u=' + enc(link)),
+    net('x', 'X', 'https://twitter.com/intent/tweet?text=' + enc(msg) + '&url=' + enc(link)),
+    net('tg', 'Telegram', 'https://t.me/share/url?url=' + enc(link) + '&text=' + enc(msg)),
+    net('ml', 'Correo', 'mailto:?subject=' + enc('Recordando a ' + pet.name) + '&body=' + enc(msg + '\n\n' + link)),
+    el('button', {class: 'net cp', on: {click: () => copy(link)}}, 'Copiar enlace'));
+  const native = navigator.share ? el('button', {class: 'btn', style: 'width:100%;margin-top:10px', on: {click: async () => { try { await navigator.share({title: 'Recordando a ' + pet.name, text: msg, url: link}); } catch {} }}}, '📤 Compartir con otras apps') : null;
+  let fmt = 'story';
+  const cardBox = el('div', {class: 'cardbox'});
+  const fmtBtn = (k, label) => el('button', {class: 'ptab' + (fmt === k ? ' sel' : ''), on: {click: e => { fmt = k; e.target.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('sel', b === e.target)); drawCard(); }}}, label);
+  const drawCard = () => {
+    cardBox.replaceChildren(el('p', {class: 'muted', style: 'margin:0'}, 'Creando la imagen…'));
+    memorialCard(pet, fmt).then(c => {
+      const url = c.toDataURL('image/jpeg', .9);
+      const name = 'larc-en-pet-' + pet.name.toLowerCase().replace(/[^a-z0-9áéíóúñ]+/gi, '-') + (fmt === 'story' ? '-historia' : '') + '.jpg';
+      const btns = el('div', {class: 'row2', style: 'margin-top:10px'});
+      c.toBlob(blob => {
+        const fileObj = blob && typeof File === 'function' ? new File([blob], name, {type: 'image/jpeg'}) : null;
+        if (fileObj && navigator.canShare && navigator.canShare({files: [fileObj]})) btns.append(el('button', {class: 'btn', on: {click: async () => { await copy(link, 'Enlace copiado: pégalo en el sticker «Enlace» 🔗'); try { await navigator.share({files: [fileObj], title: pet.name}); } catch {} }}}, '📤 Subir a historia'));
+        btns.append(el('a', {class: 'ghost dl', href: url, download: name, on: {click: () => copy(link, 'Imagen descargada y enlace copiado 🔗')}}, '⬇️ Descargar'));
+      }, 'image/jpeg', .9);
+      cardBox.replaceChildren(el('img', {src: url, alt: 'Imagen para compartir a ' + pet.name, class: 'cardimg' + (fmt === 'story' ? ' story' : '')}), btns);
+    }).catch(() => cardBox.replaceChildren(el('p', {class: 'muted'}, 'No se pudo crear la imagen.')));
+  };
+  const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&color=4a3029&bgcolor=fbf3e6&data=' + enc(link);
   openModal(() => [
     el('h2', {class: 'ctitle'}, 'Compartir a ' + pet.name),
-    el('p', {class: 'muted', style: 'margin:4px 0 10px'}, 'Invita a familia y amigos a visitarle y encenderle una velita.'),
-    el('label', {}, 'Enlace directo a su memorial'),
-    el('div', {class: 'authform'}, linkIn, el('button', {class: 'btn', on: {click: async () => { try { await navigator.clipboard.writeText(link); toast('Enlace copiado 📋'); } catch { linkIn.select(); toast('Mantén presionado el enlace para copiarlo.'); } }}}, 'Copiar')),
-    S.backend && S.backend.kind !== 'supabase' ? el('p', {class: 'muted', style: 'font-size:12.5px;margin:6px 0 0'}, 'En esta versión el enlace abre el memorial solo para quienes ya tienen acceso a esta página.') : null,
-    el('label', {}, 'Tarjeta para redes sociales'), cardBox,
+    el('p', {class: 'muted', style: 'margin:4px 0 12px'}, 'Quien toque el enlace llega directo a su lugar en el memorial, desde cualquier red social.'),
+    el('label', {}, 'Enviar su enlace'), nets, native,
+    el('div', {class: 'linkrow'}, el('input', {value: link, readonly: true, 'aria-label': 'Enlace del memorial', on: {focus: e => e.target.select()}})),
+    el('label', {}, 'Imagen para Instagram, TikTok o Facebook'),
+    el('div', {class: 'ptabs', style: 'margin:6px 0 10px'}, fmtBtn('story', '📱 Historia'), fmtBtn('post', '🖼️ Publicación')),
+    cardBox,
+    el('div', {class: 'howto'},
+      el('b', {}, 'Para que lleguen desde Instagram o TikTok'),
+      el('ol', {},
+        el('li', {}, 'Sube la imagen a tu historia.'),
+        el('li', {}, 'Agrega el sticker «Enlace» y pega el enlace (ya queda copiado al descargar).'),
+        el('li', {}, 'En una publicación o en TikTok, escribe «link en la bio» y pon el enlace en tu perfil.'))),
+    el('details', {class: 'more'}, el('summary', {}, '🔳 Código QR para imprimir'),
+      el('div', {style: 'text-align:center;margin-top:10px'}, el('img', {src: qr, alt: 'Código QR del memorial de ' + pet.name, style: 'width:200px;height:200px;border-radius:14px'}),
+        el('p', {class: 'muted', style: 'font-size:12.5px;margin:6px 0 0'}, 'Ponlo en una foto impresa, una tarjeta o junto a su urna: al escanearlo se abre su memorial.'),
+        el('a', {class: 'ghost dl', style: 'display:inline-block;margin-top:8px', href: qr, target: '_blank', rel: 'noopener'}, 'Abrir QR en grande'))),
   ], 'wide');
-  memorialCard(pet).then(c => {
-    const url = c.toDataURL('image/jpeg', .9);
-    const name = 'larc-en-pet-' + pet.name.toLowerCase().replace(/[^a-z0-9áéíóúñ]+/gi, '-') + '.jpg';
-    const btns = el('div', {class: 'row2', style: 'margin-top:10px'});
-    c.toBlob(blob => {
-      const fileObj = blob && typeof File === 'function' ? new File([blob], name, {type: 'image/jpeg'}) : null;
-      if (fileObj && navigator.canShare && navigator.canShare({files: [fileObj]})) btns.append(el('button', {class: 'btn', on: {click: async () => { try { await navigator.share({files: [fileObj], title: pet.name, text: `Recordando a ${pet.name} 💛 ${link}`}); } catch {} }}}, '📤 Compartir imagen'));
-      btns.append(el('a', {class: 'ghost dl', href: url, download: name}, '⬇️ Descargar'));
-    }, 'image/jpeg', .9);
-    cardBox.replaceChildren(el('img', {src: url, alt: 'Tarjeta de ' + pet.name, class: 'cardimg'}), btns, el('p', {class: 'muted', style: 'font-size:12.5px;margin:8px 0 0'}, 'Si no se descarga, mantén presionada la imagen (o clic derecho) y elige "Guardar imagen".'));
-  }).catch(() => cardBox.replaceChildren(el('p', {class: 'muted'}, 'No se pudo crear la tarjeta.')));
+  drawCard();
 }
 
 // ---------- my pets ----------
@@ -2868,7 +2973,7 @@ function openMenu(){
 
 // ---------- deep links (#m12 opens that memorial) ----------
 S.deepIdx = null;
-{ const m = (location.hash || '').match(/^#m(\d{1,6})$/); if (m) S.deepIdx = parseInt(m[1]); }
+{ const m = (location.hash || '').match(/^#m(\d{1,6})$/) || (location.search || '').match(/[?&]m=(\d{1,6})(?:&|$)/); if (m) S.deepIdx = parseInt(m[1]); }
 function updateDeepIntro(){
   const box = $('deepIntro'); if (!box) return;
   if (S.deepIdx == null || S.started) { box.classList.add('hidden'); return; }

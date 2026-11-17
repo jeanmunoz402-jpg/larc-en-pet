@@ -57,6 +57,8 @@ Con Supabase, todos los visitantes del sitio público ven lo mismo: mascotas, ve
    Después, en otra consulta, pega y ejecuta [`supabase/02_novedades.sql`](supabase/02_novedades.sql). Agrega fechas especiales, álbum de recuerdos, directorio de servicios y solicitudes.
 
    Por último, ejecuta [`supabase/03_limite_diario.sql`](supabase/03_limite_diario.sql): cada persona puede dejar una velita, una flor, un regalo y un mensaje por memorial al día.
+
+   Y [`supabase/04_redes_sociales.sql`](supabase/04_redes_sociales.sql): guarda el Instagram, TikTok y Facebook de cada mascota.
 2. **Claves:** en **Project Settings → API**, copia la *Project URL* y la *anon public key*, y pégalas al inicio de `index.html`:
    ```js
    window.LARC_CONFIG = window.LARC_CONFIG || {supabaseUrl: 'https://xxxx.supabase.co', supabaseKey: 'eyJ...'};
