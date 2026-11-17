@@ -272,7 +272,7 @@ const $ = id => document.getElementById(id);
 const S = {
   pets: new Map(), offerings: [], stats: new Map(),
   floor: -1, started: false, modal: false, backend: null, readonly: false, dirty: true,
-  av: {x: 0, z: 2.2, yaw: 0, walk: 0, target: null, onArrive: null, moving: false},
+  av: {x: (Math.random() - .5) * 3.2, z: 1.6 + Math.random() * 1.6, yaw: 0, walk: 0, target: null, onArrive: null, moving: false},
   cam: {yaw: 0, tyaw: null, h: 1.0},
   keys: {}, joy: {x: 0, y: 0, on: false}, lanterns: [], t: 0, changing: false,
 };
@@ -1559,7 +1559,8 @@ function updatePeers(dt){
     q.moving = q.mv || d > .05; if (q.moving) q.walk += dt * 9; else q.walk = 0;
   }
 }
-let lastSent = '', lastSentT = 0;
+let lastSent = '', lastSentT = 0, lastBeat = 0;
+setInterval(() => { if (!S.presence || !S.started) return; if (Date.now() - lastBeat > 12000) { lastBeat = Date.now(); lastSent = ''; } sendPresence(); }, 700);
 function sendPresence(){
   if (!S.presence || !S.started) return;
   const now = performance.now(); if (now - lastSentT < (S.presence.rate || 110)) return;
@@ -1695,6 +1696,7 @@ function changeFloor(n, then){
     S.floor = n; S.dirty = true;
     let sp = {x: 0, z: 2.6, yaw: 0};
     if (n < 0) { const ar = ARCHES.find(a => a.f === from); sp = from >= 0 ? {x: ar ? ar.x : 0, z: HD - 1.6, yaw: Math.PI} : {x: 0, z: 2.2, yaw: 0}; }
+    sp.x += (Math.random() - .5) * (n < 0 ? 2.4 : 1.6); sp.z += (Math.random() - .5) * .8;
     Object.assign(S.av, {x: sp.x, z: sp.z, yaw: sp.yaw, target: null, onArrive: null}); S.cam.yaw = sp.yaw; S.cam.tyaw = null;
     setTimeout(() => { $('fade').classList.remove('on'); S.changing = false; then && then(); }, 120);
   }, 380);
