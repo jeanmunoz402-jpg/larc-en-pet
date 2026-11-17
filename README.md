@@ -11,7 +11,8 @@ Memorial 3D para mascotas en el navegador. Los visitantes entran a un hall compa
 - **Memorial de cada mascota:** foto, nombre, fechas, epitafio, velitas (duran 30 días), flores, regalos, faroles y libro de visitas.
 - **Angelitos 2D:** cada mascota tiene un angelito ilustrado según su especie, con alas animadas y el color tomado de su foto.
 - **Editor de personaje:** opciones distintas para mujer y hombre (cuerpo, peinados, ropa, calzado, accesorios), con tono de piel y colores.
-- **Visitantes en vivo:** se ven los nombres de los demás visitantes y se pueden enviar saludos con emojis.
+- **Visitantes en vivo:** se ven los demás visitantes con su nombre, y se pueden enviar saludos con emojis y burbujas de diálogo.
+- **Chat** en el hall y en cada memorial, con moderación.
 - **Tutorial de bienvenida** paso a paso.
 - Se controla con toque, joystick, teclado (WASD o flechas) y arrastrando para girar la cámara.
 
@@ -24,9 +25,8 @@ Memorial 3D para mascotas en el navegador. Los visitantes entran a un hall compa
 - Todas las texturas (madera, mármol, papel mural, letreros, angelitos) se generan con canvas al cargar la página. No usa imágenes externas.
 - Los datos pasan por una capa de *backend* intercambiable:
   - **Dentro de Claude (artifact):** usa las capacidades `db` (datos compartidos) y `room` (presencia en vivo).
-  - **Fuera de Claude (GitHub Pages, Netlify, etc.):** cae en **modo local**, donde todo se guarda en el `localStorage` de cada visitante.
-
-> ⚠️ Para un sitio público compartido hace falta conectar un backend propio, por ejemplo Supabase, para guardar mascotas y ofrendas y para la presencia en tiempo real. Ver "Próximos pasos".
+  - **Con Supabase configurado:** base de datos, fotos, inicio de sesión, tiempo real y presencia compartidos. Ver la sección "Conectar Supabase".
+  - **Sin configuración:** funciona en **modo local**, donde todo se guarda en el `localStorage` de cada visitante.
 
 ## Probar localmente
 
@@ -43,20 +43,51 @@ python3 -m http.server 8000
 2. Ve a **Settings → Pages → Build and deployment**, elige **Deploy from a branch**, la rama `main` y la carpeta `/ (root)`.
 3. En uno o dos minutos queda disponible en `https://jeanmunoz402-jpg.github.io/larc-en-pet/`.
 
-## Próximos pasos para lanzarlo al público
+## Conectar Supabase (versión pública compartida)
 
-1. **Backend compartido (Supabase):**
-   - Tablas `pets` y `offerings`.
-   - Bucket de Storage para las fotos.
-   - Realtime Presence para los visitantes en vivo.
-   - Un adaptador `setupSupabase()` junto a `setupDb()` y `setupLocal()`.
-2. **Cuentas y moderación:**
-   - Inicio de sesión por email o Google.
-   - Un botón para reportar contenido y un panel de moderación.
-   - Filtro de mensajes.
-3. **Rendimiento:** las fotos deberían ir a Storage en vez de guardarse en base64 en la base de datos.
-4. **Legal:** términos de uso y política de privacidad (fotos y mensajes de usuarios).
-5. **Monetización** (ver el análisis en la conversación): plan "Luz eterna", recuerdos físicos con QR y alianzas con veterinarias o crematorios.
+Con Supabase, todos los visitantes del sitio público ven lo mismo: mascotas, velitas, flores, libro de visitas, chat y visitantes en vivo.
+
+1. **Base de datos:** en Supabase ve a **SQL Editor → New query**, pega todo [`supabase/schema.sql`](supabase/schema.sql) y toca **Run**. Esto crea:
+   - Las tablas.
+   - Las reglas de seguridad (RLS).
+   - El tiempo real.
+   - El bucket de fotos.
+   - El anti-spam y el ocultamiento automático de mensajes reportados.
+2. **Claves:** en **Project Settings → API**, copia la *Project URL* y la *anon public key*, y pégalas al inicio de `index.html`:
+   ```js
+   window.LARC_CONFIG = window.LARC_CONFIG || {supabaseUrl: 'https://xxxx.supabase.co', supabaseKey: 'eyJ...'};
+   ```
+   La *anon key* es pública por diseño. **Nunca** pongas la `service_role` key.
+3. **Inicio de sesión:** en **Authentication → URL Configuration**, pon como *Site URL* `https://jeanmunoz402-jpg.github.io/larc-en-pet/` y agrégala también en *Redirect URLs*.
+   - El correo con enlace mágico funciona sin configurar nada más.
+   - Para **Google**, activa el proveedor en **Authentication → Providers → Google**, con un Client ID de Google Cloud.
+4. **Administrador:** inicia sesión una vez en la app. Luego, en el SQL Editor, ejecuta lo siguiente con tu id (lo encuentras en **Authentication → Users**):
+   ```sql
+   insert into public.admins (user_id) values ('TU-ID');
+   ```
+   Como administrador puedes borrar cualquier mensaje.
+
+### Qué se comparte en vivo
+
+- **Presencia:** se ve a los demás caminando con su personaje y su nombre, y quién está visitando cada mascota ("👥 2 aquí").
+- **Burbujas:** lo que escribes en el chat aparece sobre tu personaje durante 7 segundos.
+- **Chat:** hay un chat en el hall y otro en cada memorial, con historial.
+- **Avisos:** aparece una notificación cuando alguien enciende una velita o deja una flor.
+- **Moderación:**
+  - Filtro de groserías y enlaces.
+  - Máximo 5 mensajes cada 30 segundos.
+  - Botones para reportar ⚑ y silenciar 🔇. Con 3 reportes el mensaje se oculta solo.
+  - El autor o un administrador pueden borrar mensajes.
+- **Permisos:**
+  - Encender velitas, dejar flores y regalos: libre.
+  - Firmar el libro de visitas, conversar y añadir mascotas: requiere iniciar sesión.
+
+## Próximos pasos
+
+- Panel de moderación (revisar reportes).
+- Editar o retirar un memorial propio.
+- Términos de uso y política de privacidad.
+- Monetización: plan "Luz eterna", recuerdos físicos con QR y alianzas con veterinarias.
 
 ## Licencia
 

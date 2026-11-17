@@ -128,7 +128,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold2);b
 .gender{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 4px}
 .gbtn{border:2px solid #ecdcc8;background:#fff;border-radius:14px;padding:10px;font-weight:800;font-size:15px}
 .gbtn.sel{background:linear-gradient(180deg,#fff4d9,#ffe2a6);border-color:var(--gold2)}
-@media (max-width:600px){#hint{top:calc(126px + env(safe-area-inset-top))!important}.chip{padding:8px 11px}}
+@media (max-width:600px){#hint{top:calc(126px + env(safe-area-inset-top))!important}.chip{padding:8px 10px}.brand span,.brand em{white-space:nowrap;font-size:10px}.hudrow{gap:5px}}
 body.customizing #hint,body.customizing #controls,body.customizing #hud,body.customizing #emotes{display:none}
 #coach{position:fixed;inset:0;z-index:30;pointer-events:none}
 #coach.dim{background:rgba(61,44,42,.42)}
@@ -140,6 +140,35 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
 #ctext{margin:0 0 14px;line-height:1.5;color:#5a4640}
 .cbtns{display:flex;gap:10px;justify-content:flex-end}
 .cbtns .btn,.cbtns .ghost{padding:10px 16px;font-size:15px}
+#chatBtn{position:relative}
+#chatBadge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:#e8584f;color:#fff;font-style:normal;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+#chat{position:fixed;z-index:12;right:calc(12px + env(safe-area-inset-right));bottom:calc(96px + env(safe-area-inset-bottom));width:min(370px,calc(100vw - 24px));height:min(56vh,520px);display:flex;flex-direction:column;background:linear-gradient(180deg,#fffdf8,#fff6ea);border:2px solid #fff;border-radius:22px;box-shadow:0 14px 44px #3d2c2a40;overflow:hidden}
+#chat.hidden{display:none}
+.chead{display:flex;align-items:center;gap:6px;padding:10px 10px 6px 12px;border-bottom:1px solid #f0e2d0}
+#chatTabs{display:flex;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none}
+.ctab{border:1.5px solid #ecdcc8;background:#fff;border-radius:999px;padding:6px 11px;font-weight:800;font-size:13px;white-space:nowrap}
+.ctab.sel{background:#fff1d6;border-color:var(--gold2)}
+.chead .close{position:static;width:32px;height:32px;flex:none}
+#chatList{flex:1;overflow-y:auto;padding:10px 12px}
+.cmsg{margin:0 0 10px;max-width:88%}
+.cmsg.mine{margin-left:auto;text-align:right}
+.cmsg p{margin:3px 0 0;display:inline-block;background:#f6ece0;padding:8px 12px;border-radius:14px 14px 14px 4px;line-height:1.4;overflow-wrap:anywhere;text-align:left}
+.cmsg.mine p{background:#ffe7b3;border-radius:14px 14px 4px 14px}
+.cmeta{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.cmsg.mine .cmeta{justify-content:flex-end}
+.cmeta b{color:#6b3f1d}
+.mtools{display:inline-flex;gap:2px;opacity:.55}
+.mtools button{border:0;background:none;padding:0 3px;font-size:13px}
+.mtools button:hover{opacity:1}
+#chatNote{padding:10px 12px;font-size:13.5px;color:var(--muted);border-top:1px solid #f0e2d0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#chatForm{display:flex;gap:6px;padding:8px;border-top:1px solid #f0e2d0;align-items:center}
+#chatForm.hidden{display:none}
+#chatIn{flex:1;min-width:0;padding:10px 12px;font-size:16px}
+#chatForm .btn{padding:10px 14px;font-size:14px}
+.saytog{display:flex;align-items:center;gap:3px;margin:0;font-size:11px;white-space:nowrap}
+.saytog input{width:auto;margin:0}
+.pstats .live{color:#3d8a5a;font-weight:700}
+@media (max-width:600px){#chat{left:0;right:0;width:auto;bottom:0;height:58vh;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom)}body.chatting #controls{display:none}}
 #toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;
   background:#fffaf2;border:2px solid var(--gold2);color:var(--ink);font-weight:700;padding:11px 18px;border-radius:16px;font-size:14px;z-index:40;transition:.3s;pointer-events:none;max-width:90vw;text-align:center;box-shadow:0 8px 26px #3d2c2a33}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -158,12 +187,20 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
       <button class="chip" id="hallBtn" title="Volver al hall">🏛 Hall</button>
       <button class="chip" id="meBtn" aria-label="Mi personaje" title="Mi personaje">👤</button>
       <button class="chip" id="emoBtn" aria-label="Saludar" title="Saludar">😊</button>
+      <button class="chip" id="chatBtn" aria-label="Conversar" title="Conversar">💬<i id="chatBadge" class="hidden">0</i></button>
+      <button class="chip gold hidden" id="loginBtn">Entrar</button>
       <button class="chip" id="helpBtn" aria-label="Ayuda">?</button>
     </div>
   </div>
 </div>
 <div id="hint">Toca el suelo para caminar</div>
 <div id="emotes" class="hidden"></div>
+<div id="chat" class="hidden">
+  <div class="chead"><div id="chatTabs"></div><button class="close" id="chatClose" aria-label="Cerrar chat">✕</button></div>
+  <div id="chatList"></div>
+  <div id="chatNote" class="hidden"></div>
+  <form id="chatForm"><label class="saytog"><input type="checkbox" id="chatSay" checked> burbuja</label><input id="chatIn" maxlength="280" placeholder="Escribe un mensaje…" autocomplete="off"><button class="btn" type="submit">Enviar</button></form>
+</div>
 
 <div id="controls">
   <div id="joy" aria-label="Mover"><div id="knob"></div></div>
@@ -201,6 +238,10 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
 <div id="toast"></div>
 <div id="coach" class="hidden"><div id="ring" class="hidden"></div><div id="ccard"><div id="cstep"></div><h3 id="ctitle"></h3><p id="ctext"></p><div class="cbtns"><button class="ghost" id="cskip">Saltar</button><button class="btn" id="cnext">Siguiente</button></div></div></div>
 
+<script>
+// Configuración del servidor compartido (Supabase). Déjalo vacío para usar el modo de Claude o el modo local.
+window.LARC_CONFIG = window.LARC_CONFIG || {supabaseUrl: '', supabaseKey: ''};
+</script>
 <script>
 (() => {
 'use strict';
@@ -255,7 +296,7 @@ function firstFree(){ for (let i = 0; i < 100000; i++) if (!S.pets.get('p' + i))
 function cleanPet(id, v){
   if (!v || typeof v.name !== 'string' || !v.name.trim() || !/^p\d+$/.test(id)) return null;
   return { id, name: str(v.name, 40), species: SPECIES[v.species] ? v.species : 'otro', born: str(v.born, 20), died: str(v.died, 20),
-    epitaph: str(v.epitaph, 160), photo: typeof v.photo === 'string' && v.photo.startsWith('data:image/') ? v.photo : '',
+    epitaph: str(v.epitaph, 160), photo: typeof v.photo === 'string' && (v.photo.startsWith('data:image/') || (LARC.supabaseUrl && v.photo.startsWith(LARC.supabaseUrl + '/storage/v1/object/public/'))) ? v.photo : '',
     by: str(v.by, 40), at: +v.at || 0 };
 }
 function cleanOff(v){
@@ -276,7 +317,7 @@ function onData(){
   }
   S.stats = st; S.dirty = true;
   $('stPets').textContent = S.pets.size; $('stCandles').textContent = candles; $('stMsgs').textContent = msgs;
-  updateHUD();
+  updateHUD(); notifyNew();
   if (S.modal && S.modalRefresh) S.modalRefresh();
 }
 
@@ -321,11 +362,12 @@ function setupDb(db){
 }
 function myId(){ let id = store.get('aac-id'); if (!id) { id = 'v' + Math.random().toString(36).slice(2, 10); store.set('aac-id', id); } return id; }
 async function initBackend(){
+  if (LARC.supabaseUrl && LARC.supabaseKey) { try { await setupSupabase(); return; } catch (e) { console.error(e); toast('No se pudo conectar con el servidor. Modo local activado.'); } setupLocal(); return; }
   let tries = 0;
   while (!(window.claude && typeof window.claude.use === 'function') && tries++ < 15) await new Promise(r => setTimeout(r, 100));
   let db = null;
   try { if (window.claude && window.claude.use) db = await window.claude.use('db'); } catch {}
-  if (db) { try { setupDb(db); return; } catch {} }
+  if (db) { try { setupDb(db); setupDbChat(db); return; } catch {} }
   setupLocal();
 }
 function writeError(e){
@@ -511,7 +553,7 @@ function photoTexture(pet){
   g.font = '130px ' + EMOJI_FONT; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(SPECIES[pet.species], 128, 168);
   e.photoKey = key; e.photo = texFrom(c);
   if (pet.photo) {
-    const img = new Image();
+    const img = new Image(); if (/^https?:/.test(pet.photo)) img.crossOrigin = 'anonymous';
     img.onload = () => {
       if (e.photoKey !== key) return;
       const ar = img.width / img.height; let dw = 256, dh = 256 / ar; if (dh < 320) { dh = 320; dw = 320 * ar; }
@@ -741,7 +783,7 @@ function wrapText(g, text, maxW, maxLines){
 const imgCache = new Map();
 function getImg(src){
   let im = imgCache.get(src);
-  if (!im) { im = new Image(); im.onload = () => { S.dirty = true; }; im.src = src; imgCache.set(src, im); }
+  if (!im) { im = new Image(); if (/^https?:/.test(src)) im.crossOrigin = 'anonymous'; im.onload = () => { S.dirty = true; }; im.src = src; imgCache.set(src, im); }
   return im.complete && im.naturalWidth ? im : null;
 }
 function makeHallTextures(){
@@ -1185,6 +1227,7 @@ cv.addEventListener('wheel', e => { S.cam.h = clamp(S.cam.h + e.deltaY * .002, .
 })();
 const KM = {ArrowUp: 'f', KeyW: 'f', ArrowDown: 'b', KeyS: 'b', ArrowLeft: 'l', KeyA: 'l', ArrowRight: 'r', KeyD: 'r'};
 addEventListener('keydown', e => {
+  if (e.target && e.target.matches && e.target.matches('input,textarea,select')) { if (e.key === 'Escape' && S.chatOpen) closeChat(); return; }
   if (S.modal) { if (e.key === 'Escape') closeModal(); return; }
   if (!S.started) { if (e.key === 'Enter') start(); return; }
   if (S.coach) return;
@@ -1234,7 +1277,7 @@ function updateHUD(){
   } else {
     sb.classList.add('hidden');
     const k = nearPlace();
-    if (k != null) { const pet = petAt(S.floor, k); act.classList.remove('hidden'); act.textContent = pet ? 'Visitar a ' + pet.name : '＋ Poner a mi mascota aquí'; hint = pet ? `${SPECIES[pet.species]} ${pet.name} · 🕯️ ${statsOf(pet.id).lit}` : 'Lugar libre'; }
+    if (k != null) { const pet = petAt(S.floor, k); act.classList.remove('hidden'); act.textContent = pet ? 'Visitar a ' + pet.name : '＋ Poner a mi mascota aquí'; hint = pet ? `${SPECIES[pet.species]} ${pet.name} · 🕯️ ${statsOf(pet.id).lit}` + (visitorsOf(pet.id) ? ` · 👥 ${visitorsOf(pet.id)} aquí` : '') : 'Lugar libre'; }
     else { act.classList.add('hidden'); hint = 'Toca el suelo para caminar · arrastra para mirar'; }
   }
   if (hint !== lastHint) { $('hint').textContent = hint; lastHint = hint; }
@@ -1475,16 +1518,13 @@ let room = null;
 const peers = new Map();
 S.myEmo = null; S.myEmoT = 0; S.myEmoUntil = 0;
 async function initRoom(){
+  if (LARC.supabaseUrl && LARC.supabaseKey) return;
   try { if (window.claude && window.claude.use) room = await window.claude.use('room'); } catch {}
   if (!room) return;
   try {
-    room.onPeers(ch => {
-      const alive = new Set();
-      for (const p of ch.peers) { if (p.isMe || p.kind !== 'viewer') continue; alive.add(p.peer); upsertPeer(p); }
-      for (const k of [...peers.keys()]) if (!alive.has(k)) peers.delete(k);
-      updatePeople();
-    }, () => { room = null; peers.clear(); updatePeople(); });
-  } catch { room = null; }
+    S.presence = {kind: 'room', send: pr => room.presence(pr), rate: 110};
+    room.onPeers(ch => presenceUpdate(ch.peers.filter(p => !p.isMe && p.kind === 'viewer')), () => { room = null; S.presence = null; peers.clear(); updatePeople(); });
+  } catch { room = null; S.presence = null; }
   lastSent = '';
 }
 function upsertPeer(p){
@@ -1507,18 +1547,21 @@ function updatePeers(dt){
 }
 let lastSent = '', lastSentT = 0;
 function sendPresence(){
-  if (!room || !S.started) return;
-  const now = performance.now(); if (now - lastSentT < 110) return;
+  if (!S.presence || !S.started) return;
+  const now = performance.now(); if (now - lastSentT < (S.presence.rate || 110)) return;
   const a = S.av;
   const pr = {f: S.floor, x: Math.round(a.x * 100) / 100, z: Math.round(a.z * 100) / 100, r: Math.round(a.yaw * 100) / 100, m: a.moving ? 1 : 0, l: lookStr(S.look), n: str(authorName(), 22) || 'Visitante'};
   if (S.myEmo) { pr.e = S.myEmo; pr.et = S.myEmoT; }
+  pr.u = myUid(); const v = currentVisit(); if (v) pr.v = v;
+  if (S.mySay && Date.now() - S.mySayT < 8000) { pr.s = S.mySay; pr.st = S.mySayT; }
   const k = JSON.stringify(pr); if (k === lastSent) return;
   lastSent = k; lastSentT = now;
-  room.presence(pr).catch(() => {});
+  Promise.resolve(S.presence.send(pr)).catch(() => {});
 }
 function updatePeople(){
   const el2 = $('people'); if (!el2) return;
-  if (!room) { el2.classList.add('hidden'); return; }
+  renderChatTabs && renderChatTabs();
+  if (!S.presence) { el2.classList.add('hidden'); return; }
   const n = peers.size; el2.classList.remove('hidden');
   el2.textContent = n ? `👥 ${n + 1} visitantes ahora` : '👥 solo tú ahora';
 }
@@ -1585,8 +1628,16 @@ function render(t){
   const angelPos = an => an.orbit ? [Math.cos(t * .22 + an.ph) * an.r, an.h + Math.sin(t * 1.3 + an.ph) * .15, FZ + Math.sin(t * .22 + an.ph) * an.r] : [an.x + Math.sin(t * .37 + an.ph) * .35, 1.85 + Math.sin(t * 1.4 + an.ph) * .1, an.z + Math.sin(t * .5 + an.ph) * .9];
   for (const an of fx.angels) { const [x, y, z] = angelPos(an); cut.push({tex: an.texs[[0, 1, 2, 1][Math.floor(t * 7 + an.ph * 3) % 4]], x, y, z, size: an.orbit ? .52 : .44}); }
   const nowP = performance.now();
-  for (const q of here) { cut.push({tex: nameTex(q.name), x: q.x, y: 1.78, z: q.z, w: .8, h: .2}); if (q.emoUntil > nowP) cut.push({tex: emojiTex(q.emo), x: q.x, y: 2.12 + Math.sin(t * 4) * .03, z: q.z, size: .36}); }
-  if (S.myEmoUntil > nowP) cut.push({tex: emojiTex(S.myEmo), x: a.x, y: 1.85 + Math.sin(t * 4) * .03, z: a.z, size: .36});
+  for (const q of here) {
+    if (muted.has(q.uid)) continue;
+    const sayOn = q.sayUntil > nowP;
+    cut.push({tex: nameTex(q.name), x: q.x, y: 1.78, z: q.z, w: .8, h: .2});
+    if (sayOn) cut.push({tex: bubbleTex(q.say), x: q.x, y: 2.2, z: q.z, w: 1.3, h: .49});
+    if (q.emoUntil > nowP) cut.push({tex: emojiTex(q.emo), x: q.x, y: (sayOn ? 2.62 : 2.12) + Math.sin(t * 4) * .03, z: q.z, size: .36});
+  }
+  const mySayOn = S.mySayUntil > nowP;
+  if (mySayOn) cut.push({tex: bubbleTex(S.mySay), x: a.x, y: 1.95, z: a.z, w: .95, h: .36});
+  if (S.myEmoUntil > nowP) cut.push({tex: emojiTex(S.myEmo), x: a.x, y: (mySayOn ? 2.4 : 1.85) + Math.sin(t * 4) * .03, z: a.z, size: .36});
   billboards(cut, true);
   // soft shadows
   gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
@@ -1662,16 +1713,17 @@ function openPet(id){
   let busy = false;
   const give = async (kind, extra = {}) => {
     if (busy) return; const pet = S.pets.get(id); if (!pet || !S.backend) return;
-    busy = true;
+    busy = true; S.lastGiveAt = Date.now();
     try {
       await S.backend.addOffering({pet: id, kind, at: Date.now(), author: str(authorName(), 40), ...extra});
       toast(kind === 'candle' ? `Encendiste una velita para ${pet.name} 🕯️` : kind === 'flower' ? `Dejaste una flor para ${pet.name}` : kind === 'gift' ? `Le dejaste un regalo a ${pet.name} ${extra.text}` : 'Tu mensaje quedó junto a ' + pet.name);
       return true;
     } catch (e) { writeError(e); } finally { busy = false; }
   };
+  S.visiting = id; lastSent = '';
   openModal(() => {
     const pet = S.pets.get(id); if (!pet) return [el('p', {}, 'Este memorial ya no existe.')];
-    const st = statsOf(id), idx = parseInt(id.slice(1));
+    const st = statsOf(id), idx = parseInt(id.slice(1)), nv = visitorsOf(id);
     const nameIn = el('input', {maxlength: 40, placeholder: 'Tu nombre (opcional)', value: authorName()});
     const txt = el('textarea', {maxlength: 280, placeholder: 'Escribe unas palabras para ' + pet.name + '…'});
     const sendBtn = el('button', {class: 'btn', style: 'width:100%;margin-top:10px', on: {click: async () => {
@@ -1698,7 +1750,9 @@ function openPet(id){
         el('span', {}, '🕯️ ', el('b', {text: String(st.lit)}), ' encendidas'),
         el('span', {}, '🌸 ', el('b', {text: String(st.flowers.length)}), ' flores'),
         el('span', {}, '🎁 ', el('b', {text: String(st.gifts.length)}), ' regalos'),
-        el('span', {}, '💌 ', el('b', {text: String(st.messages.length)}), ' mensajes')),
+        el('span', {}, '💌 ', el('b', {text: String(st.messages.length)}), ' mensajes'),
+        nv ? el('span', {class: 'live'}, '👥 ', el('b', {text: String(nv)}), nv === 1 ? ' persona más aquí ahora' : ' personas más aquí ahora') : null),
+      S.chat ? el('button', {class: 'ghost', style: 'width:100%;margin:0 0 10px', on: {click: () => { closeModal(); openChat(id); }}}, '💬 Conversar con quienes recuerdan a ' + pet.name) : null,
       el('div', {class: 'actions'}, el('button', {class: 'btn', on: {click: () => give('candle')}}, '🕯️ Encender velita'), lanternBtn, flowerBtn, giftBtn),
       pick('Flor', FLOWERS.map(f => f[1]), flowerSel, k => { flowerSel = k; flowerBtn.textContent = FLOWERS[k][1] + ' Dejar flor'; }),
       pick('Regalo', GIFTS, giftSel, k => { giftSel = k; giftBtn.textContent = GIFTS[k] + ' Dejar regalo'; }),
@@ -1774,6 +1828,8 @@ function openHelp(){
     el('p', {}, '✦ En cada galería, la escalera al cielo está al inicio. Cada piso tiene 10 lugares; cuando se llena, aparece uno nuevo más arriba.'),
     el('p', {}, '👤 Cambia tu personaje cuando quieras y 😊 saluda a los demás visitantes que estén paseando contigo.'),
     el('button', {class: 'ghost', style: 'width:100%;margin:6px 0 12px', on: {click: () => { closeModal(); runOnboarding(2); }}}, '🎓 Ver el tutorial otra vez'),
+    S.sb && S.user ? el('button', {class: 'ghost', style: 'width:100%;margin:0 0 12px', on: {click: async () => { await S.sb.auth.signOut(); closeModal(); toast('Cerraste sesión'); }}}, 'Cerrar sesión (' + (S.user.email || 'cuenta') + ')') : null,
+    el('p', {}, '💬 Con el botón de chat conversas en el hall o junto a una mascota. Tu mensaje también aparece como burbuja sobre tu personaje. Puedes reportar ⚑ o silenciar 🔇 a cualquiera.'),
     el('p', {class: 'muted'}, S.backend && S.backend.kind === 'db' ? 'Este memorial es compartido: lo que dejes lo verán todas las personas con acceso.' : 'Modo local: lo que dejes se guarda solo en este dispositivo.'),
   ]);
 }
@@ -1788,6 +1844,10 @@ $('dirBtn').onclick = () => !S.modal && openDirectory();
 $('hallBtn').onclick = () => !S.modal && changeFloor(-1);
 $('meBtn').onclick = () => S.started && !S.customizing && openCustomizer(false);
 $('emoBtn').onclick = () => $('emotes').classList.toggle('hidden');
+$('chatBtn').onclick = () => S.started && (S.chatOpen ? closeChat() : openChat());
+$('chatClose').onclick = () => closeChat();
+$('chatForm').addEventListener('submit', e => { e.preventDefault(); sendChat(); });
+$('loginBtn').onclick = () => openLogin();
 EMOTES.forEach(e => $('emotes').append(el('button', {on: {click: () => emote(e)}}, e)));
 $('helpBtn').onclick = () => !S.modal && openHelp();
 $('addBtn').onclick = addMine; $('introAdd').onclick = addMine;
@@ -1898,6 +1958,251 @@ function showCoach(i){
   card.style.transform = 'translateX(-50%)';
 }
 addEventListener('resize', () => { if (S.coach && !$('coach').classList.contains('hidden')) showCoach(COACH.findIndex(c => c.title === $('ctitle').textContent)); });
+
+// =============== live layer: chat, bubbles, visits, moderation, Supabase ===============
+const LARC = Object.assign({supabaseUrl: '', supabaseKey: ''}, window.LARC_CONFIG || {});
+S.chatMsgs = []; S.chatRoom = 'hall'; S.chatOpen = false; S.unread = 0; S.visiting = null; S.isAdmin = false; S.user = null;
+S.mySay = ''; S.mySayT = 0; S.mySayUntil = 0;
+const BAD = ['weon', 'weón', 'aweonao', 'culiao', 'culiado', 'conchetumare', 'ctm', 'csm', 'chucha', 'puta', 'puto', 'mierda', 'idiota', 'imbecil', 'imbécil', 'estupido', 'estúpido', 'maricon', 'maricón', 'pendejo', 'pelotudo', 'boludo', 'cabron', 'cabrón', 'zorra', 'perra', 'hdp', 'mongolico', 'mongólico', 'retrasado', 'fuck', 'shit', 'bitch'];
+const badRe = new RegExp('(^|[^\\p{L}])((?:' + BAD.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\p{L}{0,3})(?=$|[^\\p{L}])', 'giu');
+function cleanText(t, n = 280){ return String(t || '').replace(/\s+/g, ' ').trim().slice(0, n).replace(/(https?:\/\/|www\.)\S+/gi, '[enlace]').replace(badRe, (m, pre, w) => pre + '•'.repeat(w.length)); }
+const muted = new Set(JSON.parse(store.get('larc-muted') || '[]'));
+function muteUser(uid, name){ if (!uid) return; muted.add(uid); store.set('larc-muted', JSON.stringify([...muted])); toast(`Silenciaste a ${name || 'este visitante'}. Ya no verás sus mensajes.`); renderChat(); }
+const myUid = () => (S.user && S.user.id) || myId();
+const validRoom = r => r === 'hall' || /^p\d{1,6}$/.test(r);
+function cleanChat(v, id){
+  if (!v || !validRoom(v.room)) return null;
+  const text = cleanText(v.text); if (!text) return null;
+  return {id: String(id), room: v.room, text, author: str(v.author, 22).trim() || 'Visitante', uid: str(v.uid, 64), at: +v.at || 0};
+}
+
+// ---------- presence transport (Claude room or Supabase channel) ----------
+S.presence = null;
+function presenceUpdate(list){
+  const alive = new Set();
+  for (const p of list) { alive.add(p.peer); upsertPeer(p); }
+  for (const k of [...peers.keys()]) if (!alive.has(k)) peers.delete(k);
+  updatePeople();
+}
+const _upsert = upsertPeer;
+upsertPeer = function(p){
+  _upsert(p);
+  const q = peers.get(p.peer); if (!q) return;
+  const pr = p.presence || {};
+  q.uid = str(pr.u, 64); q.visit = typeof pr.v === 'string' && /^p\d{1,6}$/.test(pr.v) ? pr.v : null;
+  if (typeof pr.s === 'string' && pr.st !== q.lastS) {
+    const fresh = q.lastS !== undefined || Date.now() - (+pr.st || 0) < 7000; q.lastS = pr.st;
+    const txt = cleanText(pr.s, 90);
+    if (txt && fresh && !muted.has(q.uid)) { q.say = txt; q.sayUntil = performance.now() + 7000; }
+  }
+};
+function visitorsOf(petId){ let n = 0; for (const q of peers.values()) if (q.visit === petId && !muted.has(q.uid)) n++; return n; }
+function currentVisit(){ if (S.visiting) return S.visiting; const k = nearPlace(); if (k == null) return null; const p = petAt(S.floor, k); return p ? p.id : null; }
+
+// ---------- speech bubbles ----------
+const bubbleCache = new Map();
+function bubbleTex(text){
+  const k = text + '|' + S.fontsReady; if (bubbleCache.has(k)) return bubbleCache.get(k);
+  if (bubbleCache.size > 60) { for (const [kk, t] of bubbleCache) { gl.deleteTexture(t); bubbleCache.delete(kk); if (bubbleCache.size < 40) break; } }
+  const [c, g] = canvas(512, 192); g.font = '700 30px Nunito, sans-serif';
+  const lines = wrapText(g, text, 440, 3), w = Math.min(492, Math.max(...lines.map(l => g.measureText(l).width)) + 44), h = lines.length * 38 + 30;
+  const x = 256 - w / 2, y = 150 - h;
+  g.fillStyle = 'rgba(255,253,248,.97)'; rr(g, x, y, w, h, 22); g.fill();
+  g.beginPath(); g.moveTo(240, 149); g.lineTo(256, 176); g.lineTo(272, 149); g.closePath(); g.fill();
+  g.strokeStyle = '#e6b45c'; g.lineWidth = 3; rr(g, x, y, w, h, 22); g.stroke();
+  g.fillStyle = '#4a3530'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  lines.forEach((l, i) => g.fillText(l, 256, y + 34 + i * 38));
+  const t = texFrom(c); bubbleCache.set(k, t); return t;
+}
+function say(text){ const t = cleanText(text, 90); if (!t) return; S.mySay = t; S.mySayT = Date.now(); S.mySayUntil = performance.now() + 7000; lastSent = ''; }
+
+// ---------- live notifications ----------
+S.seenOff = null; S.lastGiveAt = 0;
+function notifyNew(){
+  const keys = S.offerings.map(o => o.pet + o.kind + o.at);
+  if (!S.seenOff) { S.seenOff = new Set(keys); return; }
+  let shown = 0;
+  for (const o of S.offerings) {
+    const k = o.pet + o.kind + o.at; if (S.seenOff.has(k)) continue; S.seenOff.add(k);
+    if (Date.now() - S.lastGiveAt < 4000 || shown || !S.started) continue;
+    const pet = S.pets.get(o.pet); if (!pet) continue;
+    const who = o.author || 'Alguien';
+    const msg = o.kind === 'candle' ? `🕯️ ${who} encendió una velita a ${pet.name}` : o.kind === 'flower' ? `🌸 ${who} le dejó una flor a ${pet.name}` : o.kind === 'gift' ? `${o.text} ${who} le dejó un regalo a ${pet.name}` : `💌 ${who} firmó el libro de ${pet.name}`;
+    toast(msg); shown++;
+  }
+}
+
+// ---------- chat UI ----------
+function chatRoomLabel(r){ if (r === 'hall') return '🏛 Hall'; const p = S.pets.get(r); return p ? SPECIES[p.species] + ' ' + p.name : 'Memorial'; }
+function openChat(roomName){
+  if (roomName) S.chatRoom = roomName;
+  S.chatOpen = true; document.body.classList.add('chatting'); $('chat').classList.remove('hidden');
+  S.unread = 0; updateChatBadge(); renderChat();
+  setTimeout(() => { const i = $('chatIn'); if (i && !isTouch) i.focus(); }, 50);
+}
+function closeChat(){ S.chatOpen = false; document.body.classList.remove('chatting'); $('chat').classList.add('hidden'); }
+function updateChatBadge(){ const b = $('chatBadge'); if (!b) return; b.textContent = S.unread > 9 ? '9+' : S.unread; b.classList.toggle('hidden', !S.unread); }
+function chatNote(){
+  if (!S.chat) return 'El chat necesita la versión compartida del memorial.';
+  if (S.chat.needLogin && !S.user) return 'login';
+  if (S.readonly) return 'Puedes leer, pero no escribir. Pide al dueño acceso de Colaborador.';
+  return '';
+}
+let lastTabsKey = '';
+function renderChatTabs(force){
+  if (!S.chatOpen) return;
+  const rooms = ['hall']; const v = currentVisit(); if (v) rooms.push(v); if (S.chatRoom !== 'hall' && !rooms.includes(S.chatRoom)) rooms.push(S.chatRoom);
+  const labels = rooms.map(r => chatRoomLabel(r) + (r !== 'hall' && visitorsOf(r) ? ` · 👥${visitorsOf(r)}` : ''));
+  const key = rooms.join() + labels.join() + S.chatRoom; if (key === lastTabsKey && !force) return; lastTabsKey = key;
+  $('chatTabs').replaceChildren(...rooms.map((r, i) => el('button', {class: 'ctab' + (r === S.chatRoom ? ' sel' : ''), on: {click: () => { S.chatRoom = r; $('chatList').dataset.init = ''; renderChat(); }}}, labels[i])));
+}
+function renderChat(){
+  if (!S.chatOpen) return;
+  renderChatTabs(true);
+  const list = $('chatList'), form = $('chatForm');
+  const msgs = S.chatMsgs.filter(m => m.room === S.chatRoom && !muted.has(m.uid)).slice(-120);
+  const atBottom = list.scrollTop + list.clientHeight > list.scrollHeight - 40;
+  list.replaceChildren(...(msgs.length ? msgs.map(m => {
+    const mine = m.uid === myUid();
+    const tools = el('span', {class: 'mtools'},
+      (mine || S.isAdmin) ? el('button', {title: 'Borrar', on: {click: () => S.chat.remove(m).then(() => toast('Mensaje borrado')).catch(writeError)}}, '🗑') : null,
+      !mine ? el('button', {title: 'Reportar', on: {click: () => S.chat.report(m).then(() => toast('Gracias. Lo revisaremos con cuidado 💛')).catch(writeError)}}, '⚑') : null,
+      !mine && m.uid ? el('button', {title: 'Silenciar', on: {click: () => muteUser(m.uid, m.author)}}, '🔇') : null);
+    return el('div', {class: 'cmsg' + (mine ? ' mine' : '')}, el('div', {class: 'cmeta'}, el('b', {text: m.author}), el('small', {text: new Date(m.at).toLocaleTimeString('es-CL', {hour: '2-digit', minute: '2-digit'})}), tools), el('p', {text: m.text}));
+  }) : [el('p', {class: 'muted', style: 'text-align:center;margin:30px 10px'}, S.chatRoom === 'hall' ? 'Aún no hay mensajes en el hall. Saluda a quienes están aquí 👋' : 'Aún no hay conversación aquí. Comparte un recuerdo 💛')]));
+  if (atBottom || !list.dataset.init) { list.scrollTop = list.scrollHeight; list.dataset.init = '1'; }
+  const note = chatNote();
+  form.classList.toggle('hidden', !!note);
+  $('chatNote').classList.toggle('hidden', !note);
+  if (note === 'login') $('chatNote').replaceChildren(el('span', {}, 'Para conversar inicia sesión. '), el('button', {class: 'btn', style: 'padding:8px 14px;font-size:14px', on: {click: openLogin}}, 'Iniciar sesión'));
+  else $('chatNote').textContent = note;
+}
+async function sendChat(){
+  const inp = $('chatIn'), text = cleanText(inp.value); if (!text || !S.chat) return;
+  const now = Date.now(); S.chatTimes = (S.chatTimes || []).filter(t => now - t < 30000);
+  if (S.chatTimes.length >= 5) return toast('Vas muy rápido. Espera un momento 🙏');
+  S.chatTimes.push(now); inp.value = '';
+  if ($('chatSay').checked) say(text);
+  try { await S.chat.send(S.chatRoom, text); } catch (e) { inp.value = text; writeError(e); }
+}
+function onChatData(list){
+  const before = S.chatMsgs.length ? S.chatMsgs[S.chatMsgs.length - 1].at : Infinity;
+  S.chatMsgs = list.sort((a, b) => a.at - b.at);
+  const fresh = S.chatMsgs.filter(m => m.at > before && m.uid !== myUid() && !muted.has(m.uid)).length;
+  if (fresh && (!S.chatOpen)) { S.unread += fresh; updateChatBadge(); }
+  renderChat();
+}
+
+// ---------- Claude chat (db) + admin via user capability ----------
+function setupDbChat(db){
+  const col = db.collection('chat');
+  col.orderBy('at', 'desc').limit(300).onSnapshot(snap => onChatData(snap.docs.map(d => cleanChat(d.data(), d.id)).filter(Boolean)), () => {});
+  S.chat = {
+    needLogin: false,
+    async send(roomName, text){ await col.add({room: roomName, text, author: str(authorName(), 22) || 'Visitante', uid: myUid(), at: Date.now()}); },
+    async remove(m){ await col.doc(m.id).delete(); },
+    async report(m){ await db.collection('reports').add({msg: m.id, room: m.room, text: m.text, author: m.author, uid: m.uid, by: myUid(), at: Date.now()}); },
+  };
+  (async () => { try { const u = await window.claude.use('user'); if (u && typeof u.canEdit === 'function') S.isAdmin = !!(await u.canEdit()); } catch {} })();
+}
+
+// ---------- Supabase backend ----------
+function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.append(s); }); }
+function dataUrlToBlob(u){ const [h, b] = u.split(','); const bin = atob(b); const a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return new Blob([a], {type: (h.match(/data:(.*?);/) || [])[1] || 'image/jpeg'}); }
+const sbErr = e => { if (!e) return e; if (e.code === '23505') return {code: 'taken'}; if (e.code === '42501' || /row-level security|JWT|not authorized/i.test(e.message || '')) return {code: 'auth'}; return e; };
+async function setupSupabase(){
+  await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
+  const sb = window.supabase.createClient(LARC.supabaseUrl, LARC.supabaseKey, {auth: {persistSession: true, detectSessionInUrl: true}});
+  S.sb = sb;
+  const {data: {session}} = await sb.auth.getSession(); S.user = session ? session.user : null;
+  sb.auth.onAuthStateChange((_e, sess) => { S.user = sess ? sess.user : null; afterAuth(); });
+  const toPet = r => cleanPet('p' + r.idx, {name: r.name, species: r.species, born: r.born, died: r.died, epitaph: r.epitaph, photo: r.photo_url || '', by: r.by_name, at: Date.parse(r.created_at) || 0, owner: r.owner});
+  const toOff = r => cleanOff({pet: r.pet_id, kind: r.kind, text: r.text, color: r.color, author: r.author, at: Date.parse(r.created_at) || 0});
+  const toChat = r => cleanChat({room: r.room, text: r.text, author: r.author, uid: r.user_id, at: Date.parse(r.created_at) || 0}, r.id);
+  async function loadPets(){ const {data, error} = await sb.from('pets').select('*').order('idx'); if (error) throw error; const m = new Map(); for (const r of data) { const p = toPet(r); if (p) { p.owner = r.owner; m.set(p.id, p); } } S.pets = m; onData(); }
+  async function loadOffs(){ const {data, error} = await sb.from('offerings').select('*').order('created_at', {ascending: false}).limit(1000); if (error) throw error; S.offerings = data.map(toOff).filter(Boolean); onData(); }
+  async function loadChat(){ const {data} = await sb.from('chat_messages').select('*').eq('hidden', false).order('created_at', {ascending: false}).limit(300); onChatData((data || []).map(toChat).filter(Boolean)); }
+  try { await Promise.all([loadPets(), loadOffs(), loadChat()]); } catch (e) { console.error(e); toast('No se pudo cargar el memorial. Revisa la conexión.'); }
+  sb.channel('larc-db')
+    .on('postgres_changes', {event: '*', schema: 'public', table: 'pets'}, () => loadPets().catch(() => {}))
+    .on('postgres_changes', {event: 'INSERT', schema: 'public', table: 'offerings'}, ({new: r}) => { const o = toOff(r); if (o) { S.offerings = [o, ...S.offerings].slice(0, 1500); onData(); } })
+    .on('postgres_changes', {event: 'DELETE', schema: 'public', table: 'offerings'}, () => loadOffs().catch(() => {}))
+    .on('postgres_changes', {event: '*', schema: 'public', table: 'chat_messages'}, () => loadChat().catch(() => {}))
+    .subscribe();
+  // presence
+  const key = myId() + '-' + Math.random().toString(36).slice(2, 6);
+  const ch = sb.channel('larc-presence', {config: {presence: {key}}});
+  ch.on('presence', {event: 'sync'}, () => {
+    const st = ch.presenceState(), list = [];
+    for (const [k, metas] of Object.entries(st)) { if (k === key || !metas || !metas.length) continue; list.push({peer: k, presence: metas[metas.length - 1]}); }
+    presenceUpdate(list);
+  });
+  ch.subscribe(status => { if (status === 'SUBSCRIBED') { S.presence = {kind: 'supabase', send: pr => ch.track(pr), rate: 220}; lastSent = ''; updatePeople(); } });
+  const needUser = () => { if (!S.user) { openLogin(); throw {code: 'silent'}; } };
+  S.backend = {
+    kind: 'supabase',
+    async createPet(idx, v){
+      needUser();
+      let photo_url = null;
+      if (v.photo && v.photo.startsWith('data:')) {
+        const path = `${S.user.id}/${Date.now()}.jpg`;
+        const up = await sb.storage.from('photos').upload(path, dataUrlToBlob(v.photo), {contentType: 'image/jpeg', upsert: false});
+        if (up.error) throw sbErr(up.error);
+        photo_url = sb.storage.from('photos').getPublicUrl(path).data.publicUrl;
+      }
+      const {error} = await sb.from('pets').insert({idx, name: v.name, species: v.species, born: v.born, died: v.died, epitaph: v.epitaph, photo_url, by_name: v.by || null});
+      if (error) throw sbErr(error);
+      await loadPets();
+    },
+    async addOffering(o){
+      if (o.kind === 'message') needUser();
+      const {error} = await sb.from('offerings').insert({pet_id: o.pet, kind: o.kind, text: o.text || null, color: o.color || null, author: o.author || null});
+      if (error) throw sbErr(error);
+    },
+  };
+  S.chat = {
+    needLogin: true,
+    async send(roomName, text){ needUser(); const {error} = await sb.from('chat_messages').insert({room: roomName, text, author: str(authorName(), 22) || (S.user.email || '').split('@')[0] || 'Visitante'}); if (error) throw sbErr(error); },
+    async remove(m){ const {error} = await sb.from('chat_messages').delete().eq('id', m.id); if (error) throw sbErr(error); await loadChat(); },
+    async report(m){ needUser(); const {error} = await sb.from('reports').insert({message_id: +m.id, reason: 'inapropiado'}); if (error) throw sbErr(error); },
+  };
+  afterAuth();
+  $('modeNote').textContent = 'Memorial compartido: todos los visitantes ven las mismas velitas, flores y mensajes.';
+}
+async function afterAuth(){
+  $('loginBtn').classList.toggle('hidden', !S.sb || !!S.user);
+  S.isAdmin = false;
+  if (S.sb && S.user) {
+    try { const {data} = await S.sb.rpc('is_admin'); S.isAdmin = !!data; } catch {}
+    if (!authorName()) { const n = (S.user.user_metadata && (S.user.user_metadata.full_name || S.user.user_metadata.name)) || (S.user.email || '').split('@')[0]; if (n) store.set('aac-name', String(n).slice(0, 22)); }
+    if (S.loginOpen) { S.loginOpen = false; closeModal(); toast('¡Sesión iniciada! 💛'); }
+  }
+  lastSent = ''; renderChat();
+}
+function openLogin(){
+  if (!S.sb) return;
+  S.loginOpen = true;
+  const email = el('input', {type: 'email', placeholder: 'tu@email.com', autocomplete: 'email'});
+  const redirect = location.origin + location.pathname;
+  openModal(() => [
+    el('h2', {class: 'ctitle'}, 'Inicia sesión'),
+    el('p', {class: 'muted', style: 'margin:4px 0 14px'}, 'Para cuidar este espacio, conversar, firmar libros de visitas y añadir mascotas se necesita una cuenta. Encender velitas y dejar flores es libre.'),
+    el('button', {class: 'ghost', style: 'width:100%;font-size:16px', on: {click: async () => { const {error} = await S.sb.auth.signInWithOAuth({provider: 'google', options: {redirectTo: redirect}}); if (error) toast('El inicio con Google aún no está activado.'); }}}, 'Continuar con Google'),
+    el('div', {class: 'muted', style: 'text-align:center;margin:14px 0'}, 'o recibe un enlace en tu correo'),
+    email,
+    el('button', {class: 'btn', style: 'width:100%;margin-top:10px', on: {click: async e => {
+      const v = email.value.trim(); if (!/^\S+@\S+\.\S+$/.test(v)) return toast('Escribe un correo válido.');
+      e.target.disabled = true;
+      const {error} = await S.sb.auth.signInWithOtp({email: v, options: {emailRedirectTo: redirect}});
+      e.target.disabled = false;
+      toast(error ? 'No se pudo enviar el enlace. Intenta de nuevo.' : '📬 Te enviamos un enlace. Ábrelo desde este mismo dispositivo.');
+    }}}, 'Enviarme un enlace'),
+  ]);
+}
+const _closeModal = closeModal;
+closeModal = function(){ S.loginOpen = false; S.visiting = null; lastSent = ''; _closeModal(); };
+const _writeError = writeError;
+writeError = function(e){ if (e && e.code === 'silent') return; if (e && e.code === 'auth') { openLogin(); return toast('Inicia sesión para hacer esto.'); } return _writeError(e); };
 
 // =============== boot ===============
 if (gl) {
