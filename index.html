@@ -189,7 +189,7 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
       <button class="chip" id="meBtn" aria-label="Mi personaje" title="Mi personaje">👤</button>
       <button class="chip" id="emoBtn" aria-label="Saludar" title="Saludar">😊</button>
       <button class="chip" id="chatBtn" aria-label="Conversar" title="Conversar">💬<i id="chatBadge" class="hidden">0</i></button>
-      <button class="chip gold hidden" id="loginBtn">Entrar</button>
+      <button class="chip gold hidden" id="loginBtn">🔑 Iniciar sesión</button>
       <button class="chip" id="helpBtn" aria-label="Ayuda">?</button>
     </div>
   </div>
@@ -230,6 +230,7 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
       <button class="btn" id="enterBtn">Entrar al salón</button>
       <button class="ghost" id="introAdd">＋ Añadir mi mascota</button>
     </div>
+    <button class="ghost hidden" id="introLogin" style="margin-top:10px;width:min(100%,360px)">🔑 Iniciar sesión o crear cuenta</button>
     <div class="howto"><span>👆 Toca el suelo para caminar</span><span>✋ Arrastra para mirar</span><span>🖼️ Toca una foto para visitarla</span></div>
     <div class="mode" id="modeNote">Conectando…</div>
   </div>
@@ -1848,7 +1849,8 @@ $('emoBtn').onclick = () => $('emotes').classList.toggle('hidden');
 $('chatBtn').onclick = () => S.started && (S.chatOpen ? closeChat() : openChat());
 $('chatClose').onclick = () => closeChat();
 $('chatForm').addEventListener('submit', e => { e.preventDefault(); sendChat(); });
-$('loginBtn').onclick = () => openLogin();
+$('loginBtn').onclick = () => S.user ? openAccount() : openLogin();
+$('introLogin').onclick = () => openLogin();
 EMOTES.forEach(e => $('emotes').append(el('button', {on: {click: () => emote(e)}}, e)));
 $('helpBtn').onclick = () => !S.modal && openHelp();
 $('addBtn').onclick = addMine; $('introAdd').onclick = addMine;
@@ -1924,6 +1926,7 @@ function openBoard(kind){
 const isTouch = matchMedia('(pointer: coarse)').matches;
 const COACH = [
   {title: 'Bienvenido a Larc en Pet', text: 'Un salón para recordar a nuestras mascotas, juntos. Te muestro cómo funciona en pocos pasos.', btn: 'Empezar'},
+  {title: 'Tu cuenta', text: 'Para añadir a tu mascota y conversar, inicia sesión con tu correo desde este botón. Te llega un enlace y listo, sin contraseña.', target: '#loginBtn', onlyLogin: true},
   {title: 'Primero, tu personaje', text: 'Elige cómo te verán los demás visitantes. Puedes cambiarlo cuando quieras con el botón 👤.', btn: 'Crear mi personaje', custom: true},
   {title: 'Para moverte', text: isTouch ? 'Usa el control redondo o toca el suelo donde quieras ir. Arrastra la pantalla para mirar alrededor.' : 'Haz clic en el suelo donde quieras ir o usa las flechas / WASD. Arrastra para mirar alrededor.', target: '#joy'},
   {title: 'El hall de entrada', text: 'Aquí nos encontramos todos. La vela de la comunidad crece con cada velita, los tablones muestran los últimos recuerdos y los arcos del fondo llevan a las galerías.', target: '#hint'},
@@ -1938,6 +1941,7 @@ function endOnboarding(){ S.coach = false; $('coach').classList.add('hidden'); s
 function showCoach(i){
   if (i >= COACH.length) return endOnboarding();
   const st = COACH[i], ring = $('ring'), card = $('ccard');
+  if (st.onlyLogin && (!S.sb || S.user)) return showCoach(i + 1);
   $('cstep').textContent = `${i + 1} de ${COACH.length}`;
   $('ctitle').textContent = st.title; $('ctext').textContent = st.text;
   const next = $('cnext'); next.textContent = st.btn || 'Siguiente';
@@ -2116,6 +2120,7 @@ async function setupSupabase(){
   const sb = window.supabase.createClient(LARC.supabaseUrl, LARC.supabaseKey, {auth: {persistSession: true, detectSessionInUrl: true}});
   S.sb = sb;
   const {data: {session}} = await sb.auth.getSession(); S.user = session ? session.user : null;
+  fetch(LARC.supabaseUrl + '/auth/v1/settings', {headers: {apikey: LARC.supabaseKey}}).then(r => r.json()).then(j => { S.googleOn = !!(j.external && j.external.google); }).catch(() => {});
   sb.auth.onAuthStateChange((_e, sess) => { S.user = sess ? sess.user : null; afterAuth(); });
   const toPet = r => cleanPet('p' + r.idx, {name: r.name, species: r.species, born: r.born, died: r.died, epitaph: r.epitaph, photo: r.photo_url || '', by: r.by_name, at: Date.parse(r.created_at) || 0, owner: r.owner});
   const toOff = r => cleanOff({pet: r.pet_id, kind: r.kind, text: r.text, color: r.color, author: r.author, at: Date.parse(r.created_at) || 0});
@@ -2171,7 +2176,11 @@ async function setupSupabase(){
   $('modeNote').textContent = 'Memorial compartido: todos los visitantes ven las mismas velitas, flores y mensajes.';
 }
 async function afterAuth(){
-  $('loginBtn').classList.toggle('hidden', !S.sb || !!S.user);
+  const lb = $('loginBtn');
+  lb.classList.toggle('hidden', !S.sb);
+  lb.textContent = S.user ? '👤 ' + (str(authorName(), 14) || 'Mi cuenta') : '🔑 Iniciar sesión';
+  lb.classList.toggle('gold', !S.user);
+  $('introLogin').classList.toggle('hidden', !S.sb || !!S.user);
   S.isAdmin = false;
   if (S.sb && S.user) {
     try { const {data} = await S.sb.rpc('is_admin'); S.isAdmin = !!data; } catch {}
@@ -2180,24 +2189,34 @@ async function afterAuth(){
   }
   lastSent = ''; renderChat();
 }
+function openAccount(){
+  openModal(() => [
+    el('h2', {class: 'ctitle'}, 'Mi cuenta'),
+    el('p', {class: 'muted', style: 'margin:6px 0 14px'}, 'Sesión iniciada como ' + (S.user.email || 'usuario') + (S.isAdmin ? ' · administrador 🛡️' : '')),
+    el('button', {class: 'ghost', style: 'width:100%;margin-bottom:10px', on: {click: () => { closeModal(); openCustomizer(false); }}}, '👤 Cambiar mi personaje y nombre'),
+    el('button', {class: 'ghost', style: 'width:100%', on: {click: async () => { await S.sb.auth.signOut(); closeModal(); toast('Cerraste sesión'); }}}, 'Cerrar sesión'),
+  ]);
+}
 function openLogin(){
   if (!S.sb) return;
   S.loginOpen = true;
   const email = el('input', {type: 'email', placeholder: 'tu@email.com', autocomplete: 'email'});
   const redirect = location.origin + location.pathname;
   openModal(() => [
-    el('h2', {class: 'ctitle'}, 'Inicia sesión'),
-    el('p', {class: 'muted', style: 'margin:4px 0 14px'}, 'Para cuidar este espacio, conversar, firmar libros de visitas y añadir mascotas se necesita una cuenta. Encender velitas y dejar flores es libre.'),
-    el('button', {class: 'ghost', style: 'width:100%;font-size:16px', on: {click: async () => { const {error} = await S.sb.auth.signInWithOAuth({provider: 'google', options: {redirectTo: redirect}}); if (error) toast('El inicio con Google aún no está activado.'); }}}, 'Continuar con Google'),
-    el('div', {class: 'muted', style: 'text-align:center;margin:14px 0'}, 'o recibe un enlace en tu correo'),
-    email,
+    el('h2', {class: 'ctitle'}, 'Iniciar sesión o crear cuenta'),
+    el('p', {class: 'muted', style: 'margin:4px 0 6px'}, 'Escribe tu correo y te enviamos un enlace para entrar. Si es tu primera vez, la cuenta se crea sola. No necesitas contraseña.'),
+    el('p', {class: 'muted', style: 'margin:0 0 14px;font-size:12.5px'}, 'Con cuenta puedes añadir a tu mascota, conversar y firmar libros de visitas. Encender velitas y dejar flores es libre.'),
+    el('label', {}, 'Tu correo'), email,
     el('button', {class: 'btn', style: 'width:100%;margin-top:10px', on: {click: async e => {
       const v = email.value.trim(); if (!/^\S+@\S+\.\S+$/.test(v)) return toast('Escribe un correo válido.');
       e.target.disabled = true;
       const {error} = await S.sb.auth.signInWithOtp({email: v, options: {emailRedirectTo: redirect}});
       e.target.disabled = false;
       toast(error ? 'No se pudo enviar el enlace. Intenta de nuevo.' : '📬 Te enviamos un enlace. Ábrelo desde este mismo dispositivo.');
-    }}}, 'Enviarme un enlace'),
+    }}}, '📬 Enviarme el enlace'),
+    S.googleOn ? el('div', {class: 'muted', style: 'text-align:center;margin:14px 0'}, 'o') : null,
+    S.googleOn ? el('button', {class: 'ghost', style: 'width:100%;font-size:16px', on: {click: () => S.sb.auth.signInWithOAuth({provider: 'google', options: {redirectTo: redirect}})}}, 'Continuar con Google') : null,
+    el('p', {class: 'muted', style: 'margin:14px 0 0;font-size:12.5px'}, 'Revisa también la carpeta de spam. Abre el enlace en este mismo navegador.'),
   ]);
 }
 const _closeModal = closeModal;
