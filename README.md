@@ -58,8 +58,8 @@ Con Supabase, todos los visitantes del sitio público ven lo mismo: mascotas, ve
    window.LARC_CONFIG = window.LARC_CONFIG || {supabaseUrl: 'https://xxxx.supabase.co', supabaseKey: 'eyJ...'};
    ```
    La *anon key* es pública por diseño. **Nunca** pongas la `service_role` key.
-3. **Inicio de sesión (solo con correo):** en **Authentication → URL Configuration**, pon como *Site URL* `https://jeanmunoz402-jpg.github.io/larc-en-pet/` y agrégala también en *Redirect URLs*.
-   - Recomendado: en **Authentication → Emails → Magic Link**, agrega `{{ .Token }}` al cuerpo del correo. Así el correo también trae un código de 6 dígitos que se puede escribir en la pantalla de bienvenida. Es útil cuando el enlace se abre en otro navegador del celular.
+3. **Inicio de sesión (correo + contraseña):** en **Authentication → Sign In / Providers → Email**, desactiva **"Confirm email"** y guarda. Así las personas se registran con correo y contraseña y entran al instante, sin depender de que llegue un correo.
+   - Para volver a usar correos de confirmación o recuperación, primero hay que autenticar un dominio propio en Brevo. Brevo no permite enviar como @gmail.com.
 4. **Administrador:** inicia sesión una vez en la app. Luego, en el SQL Editor, ejecuta lo siguiente con tu id (lo encuentras en **Authentication → Users**):
    ```sql
    insert into public.admins (user_id) values ('TU-ID');
@@ -79,7 +79,7 @@ Con Supabase, todos los visitantes del sitio público ven lo mismo: mascotas, ve
   - El autor o un administrador pueden borrar mensajes.
 - **Permisos:**
   - Encender velitas, dejar flores y regalos: libre.
-  - Firmar el libro de visitas, conversar y añadir mascotas: requiere iniciar sesión.
+  - Firmar el libro de visitas, conversar y añadir mascotas: requiere cuenta (correo + contraseña).
 
 ## Próximos pasos
 

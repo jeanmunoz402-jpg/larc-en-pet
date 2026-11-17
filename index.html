@@ -178,6 +178,11 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
 .authform{display:flex;gap:8px;flex-wrap:wrap}
 .authform input{flex:1 1 180px;min-width:0}
 .authform .btn{flex:0 0 auto;padding:11px 16px;font-size:15px}
+.authform.col{flex-direction:column;flex-wrap:nowrap}
+.authform.col input{flex:none}
+.authtabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.atab{border:1.5px solid #ecdcc8;background:#fff;border-radius:12px;padding:9px;font-weight:800;font-size:14px}
+.atab.sel{background:linear-gradient(180deg,#fff4d9,#ffe2a6);border-color:var(--gold2)}
 .authlinks{display:flex;justify-content:space-between;margin-top:8px}
 .link{background:none;border:0;color:#8a5a2b;text-decoration:underline;font-weight:700;padding:6px 4px;font-size:14px}
 #guestLink{display:block;margin:12px auto 0}
@@ -2251,42 +2256,53 @@ function openAccount(){
     el('h2', {class: 'ctitle'}, 'Mi cuenta'),
     el('p', {class: 'muted', style: 'margin:6px 0 14px'}, 'Sesión iniciada como ' + (S.user.email || 'usuario') + (S.isAdmin ? ' · administrador 🛡️' : '')),
     el('button', {class: 'ghost', style: 'width:100%;margin-bottom:10px', on: {click: () => { closeModal(); openCustomizer(false); }}}, '👤 Cambiar mi personaje y nombre'),
+    (() => { const np = el('input', {type: 'password', placeholder: 'Nueva contraseña (mín. 6)', autocomplete: 'new-password'}); const b = el('button', {class: 'ghost', type: 'submit'}, 'Guardar contraseña');
+      return el('form', {class: 'authform', style: 'margin:0 0 10px', on: {submit: async e => { e.preventDefault(); if (np.value.length < 6) return toast('Mínimo 6 caracteres.'); b.disabled = true; const {error} = await S.sb.auth.updateUser({password: np.value}); b.disabled = false; if (error) toast(authMsg(error)); else { np.value = ''; toast('Contraseña guardada ✅'); } }}}, np, b); })(),
     el('button', {class: 'ghost', style: 'width:100%', on: {click: async () => { await S.sb.auth.signOut(); closeModal(); toast('Cerraste sesión'); }}}, 'Cerrar sesión'),
   ]);
 }
-S.authStep = 'email'; S.authEmail = store.get('larc-email') || '';
-async function sendLink(v, btn){
-  if (!/^\S+@\S+\.\S+$/.test(v)) return toast('Escribe un correo válido.');
-  if (btn) btn.disabled = true;
-  const {error} = await S.sb.auth.signInWithOtp({email: v, options: {emailRedirectTo: location.origin + location.pathname, shouldCreateUser: true}});
-  if (btn) btn.disabled = false;
-  if (error) {
-    const m = error.message || '';
-    const sec = (m.match(/after (\d+) seconds/) || [])[1];
-    toast(/email rate limit/i.test(m) ? 'El servidor de correos llegó a su límite por hora. Intenta más tarde.' : sec ? `Por seguridad, espera ${sec} segundos antes de pedir otro correo a esta dirección.` : /security|seconds/i.test(m) ? 'Por seguridad, espera un minuto antes de pedir otro correo.' : /not authorized|address not authorized/i.test(m) ? 'Este correo aún no puede recibir mensajes del servidor. Falta configurar el envío de correos.' : 'No se pudo enviar el correo. Intenta de nuevo.');
-    console.warn('Auth email error:', m); return;
-  }
-  S.authEmail = v; store.set('larc-email', v); S.authStep = 'sent'; renderAuth(); toast('📬 Correo enviado. Revisa también la carpeta de spam.');
+S.authMode = 'login'; S.authEmail = store.get('larc-email') || '';
+function authMsg(e){
+  const m = (e && e.message) || '';
+  if (/invalid login credentials/i.test(m)) return 'Correo o contraseña incorrectos.';
+  if (/already registered|already been registered|user already exists/i.test(m)) return 'Ese correo ya tiene cuenta. Toca "Ya tengo cuenta" e inicia sesión.';
+  if (/password should be at least|weak password/i.test(m)) return 'La contraseña debe tener al menos 6 caracteres.';
+  if (/email not confirmed/i.test(m)) return 'Tu cuenta aún no está confirmada. Pide al administrador desactivar la confirmación por correo.';
+  if (/rate limit|too many/i.test(m)) return 'Demasiados intentos. Espera un momento e intenta de nuevo.';
+  if (/invalid email|unable to validate email/i.test(m)) return 'Ese correo no es válido.';
+  return 'No se pudo completar. Intenta de nuevo.';
+}
+async function doAuth(mode, email, pass, btn){
+  if (!/^\S+@\S+\.\S+$/.test(email)) return toast('Escribe un correo válido.');
+  if (pass.length < 6) return toast('La contraseña debe tener al menos 6 caracteres.');
+  btn.disabled = true; const label = btn.textContent; btn.textContent = 'Un momento…';
+  try {
+    S.authEmail = email; store.set('larc-email', email);
+    if (mode === 'signup') {
+      const {data, error} = await S.sb.auth.signUp({email, password: pass});
+      if (error) return toast(authMsg(error));
+      if (data && !data.session) return toast('Cuenta creada, pero falta confirmarla por correo. Avísale al administrador.');
+      toast('¡Cuenta creada! Bienvenido 💛');
+    } else {
+      const {error} = await S.sb.auth.signInWithPassword({email, password: pass});
+      if (error) return toast(authMsg(error));
+      toast('¡Hola de nuevo! 💛');
+    }
+  } finally { btn.disabled = false; btn.textContent = label; }
 }
 function authForm(){
-  const wrap = el('div', {class: 'authbox'});
-  if (S.authStep === 'sent') {
-    const code = el('input', {inputmode: 'numeric', maxlength: 10, placeholder: 'Código del correo', autocomplete: 'one-time-code'});
-    const ok = el('button', {class: 'btn', type: 'submit'}, 'Entrar');
-    wrap.append(
-      el('p', {class: 'authtitle'}, 'Revisa tu correo 📬'),
-      el('p', {class: 'muted'}, 'Enviamos un correo a ', el('b', {text: S.authEmail}), '. Toca el enlace del correo abriéndolo en este mismo navegador, o escribe aquí el código si el correo trae uno.'),
-      el('form', {class: 'authform', on: {submit: async e => { e.preventDefault(); const t = code.value.replace(/\s/g, ''); if (t.length < 6) return toast('Escribe el código que llegó al correo.'); ok.disabled = true; const {error} = await S.sb.auth.verifyOtp({email: S.authEmail, token: t, type: 'email'}); ok.disabled = false; if (error) toast('Código incorrecto o vencido. Pide otro correo.'); }}}, code, ok),
-      el('div', {class: 'authlinks'}, el('button', {class: 'link', on: {click: () => sendLink(S.authEmail)}}, 'Reenviar correo'), el('button', {class: 'link', on: {click: () => { S.authStep = 'email'; renderAuth(); }}}, 'Usar otro correo')));
-  } else {
-    const email = el('input', {type: 'email', placeholder: 'tu@email.com', autocomplete: 'email', value: S.authEmail});
-    const go = el('button', {class: 'btn', type: 'submit'}, '📬 Enviarme el enlace');
-    wrap.append(
-      el('p', {class: 'authtitle'}, 'Entra con tu correo'),
-      el('p', {class: 'muted'}, 'Te enviamos un enlace para entrar al salón. Si es tu primera vez, tu cuenta se crea sola. No necesitas contraseña.'),
-      el('form', {class: 'authform', on: {submit: e => { e.preventDefault(); sendLink(email.value.trim(), go); }}}, email, go));
-  }
-  return wrap;
+  const signup = S.authMode === 'signup';
+  const email = el('input', {type: 'email', placeholder: 'tu@email.com', autocomplete: 'email', value: S.authEmail});
+  const pass = el('input', {type: 'password', placeholder: signup ? 'Crea una contraseña (mín. 6)' : 'Tu contraseña', autocomplete: signup ? 'new-password' : 'current-password', minlength: 6});
+  const show = el('button', {class: 'link', type: 'button', style: 'font-size:12.5px;padding:2px 0', on: {click: () => { pass.type = pass.type === 'password' ? 'text' : 'password'; show.textContent = pass.type === 'password' ? 'Mostrar contraseña' : 'Ocultar contraseña'; }}}, 'Mostrar contraseña');
+  const go = el('button', {class: 'btn', type: 'submit', style: 'width:100%;margin-top:4px'}, signup ? '✨ Crear mi cuenta y entrar' : '🔑 Entrar');
+  return el('div', {class: 'authbox'},
+    el('div', {class: 'authtabs'},
+      el('button', {class: 'atab' + (!signup ? ' sel' : ''), type: 'button', on: {click: () => { S.authMode = 'login'; renderAuth(); }}}, 'Ya tengo cuenta'),
+      el('button', {class: 'atab' + (signup ? ' sel' : ''), type: 'button', on: {click: () => { S.authMode = 'signup'; renderAuth(); }}}, 'Crear cuenta')),
+    el('p', {class: 'muted'}, signup ? 'Regístrate con tu correo y una contraseña. Entras al instante.' : 'Entra con el correo y la contraseña que creaste.'),
+    el('form', {class: 'authform col', on: {submit: e => { e.preventDefault(); doAuth(signup ? 'signup' : 'login', email.value.trim(), pass.value, go); }}}, email, pass, show, go),
+    !signup ? el('p', {class: 'muted', style: 'font-size:12.5px;margin:10px 0 0'}, '¿Olvidaste tu contraseña? Escríbele al administrador del memorial.') : null);
 }
 function renderAuth(){ renderIntroAuth(); if (S.loginOpen && S.modalRefresh) S.modalRefresh(); }
 function renderIntroAuth(){
@@ -2303,7 +2319,7 @@ function renderIntroAuth(){
 function openLogin(){
   if (!S.sb) return;
   S.loginOpen = true;
-  openModal(() => [el('h2', {class: 'ctitle'}, 'Iniciar sesión'), authForm()]);
+  openModal(() => [el('h2', {class: 'ctitle'}, 'Tu cuenta'), authForm()]);
 }
 const _closeModal = closeModal;
 closeModal = function(){ S.loginOpen = false; S.visiting = null; lastSent = ''; _closeModal(); };
