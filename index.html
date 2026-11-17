@@ -240,7 +240,7 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
 
 <script>
 // Configuración del servidor compartido (Supabase). Déjalo vacío para usar el modo de Claude o el modo local.
-window.LARC_CONFIG = window.LARC_CONFIG || {supabaseUrl: '', supabaseKey: ''};
+window.LARC_CONFIG = window.LARC_CONFIG || {supabaseUrl: 'https://qtbeqidbpxiwykkjxswq.supabase.co', supabaseKey: 'sb_publishable_Qe-76iLD6JGFJpnmogRCRA_zaotC2H1'};
 </script>
 <script>
 (() => {
@@ -2122,7 +2122,7 @@ async function setupSupabase(){
   async function loadPets(){ const {data, error} = await sb.from('pets').select('*').order('idx'); if (error) throw error; const m = new Map(); for (const r of data) { const p = toPet(r); if (p) { p.owner = r.owner; m.set(p.id, p); } } S.pets = m; onData(); }
   async function loadOffs(){ const {data, error} = await sb.from('offerings').select('*').order('created_at', {ascending: false}).limit(1000); if (error) throw error; S.offerings = data.map(toOff).filter(Boolean); onData(); }
   async function loadChat(){ const {data} = await sb.from('chat_messages').select('*').eq('hidden', false).order('created_at', {ascending: false}).limit(300); onChatData((data || []).map(toChat).filter(Boolean)); }
-  try { await Promise.all([loadPets(), loadOffs(), loadChat()]); } catch (e) { console.error(e); toast('No se pudo cargar el memorial. Revisa la conexión.'); }
+  try { await Promise.all([loadPets(), loadOffs(), loadChat()]); } catch (e) { console.error(e); toast(/schema cache|does not exist|relation|PGRST205|42P01/i.test((e && (e.message || e.code)) || '') ? 'Falta crear la base de datos: ejecuta supabase/schema.sql en Supabase.' : 'No se pudo cargar el memorial. Revisa la conexión.'); }
   sb.channel('larc-db')
     .on('postgres_changes', {event: '*', schema: 'public', table: 'pets'}, () => loadPets().catch(() => {}))
     .on('postgres_changes', {event: 'INSERT', schema: 'public', table: 'offerings'}, ({new: r}) => { const o = toOff(r); if (o) { S.offerings = [o, ...S.offerings].slice(0, 1500); onData(); } })
