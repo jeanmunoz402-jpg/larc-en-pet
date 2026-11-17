@@ -484,7 +484,14 @@ function writeError(e){
   if (e && e.code === 'taken') return toast('Alguien acaba de ocupar este lugar. Elige otro.');
   if (e && e.code === 'invalid_argument') { S.readonly = true; return toast('Puedes visitar, pero no escribir. Pide al dueño acceso de Colaborador.'); }
   if (e && e.code === 'quota_exceeded') return toast('El memorial llegó a su capacidad máxima.');
-  toast('No se pudo guardar. Intenta de nuevo.');
+  const msg = (e && (e.message || e.error_description || e.code)) || '';
+  if (e && e.code !== 'silent') console.error('Larc en Pet · error al guardar:', e);
+  if (e && e.code === 'silent') return;
+  if (e && e.code === 'auth') return toast('Tu sesión expiró. Vuelve a iniciar sesión e intenta otra vez.');
+  if (/PGRST205|schema cache|does not exist/i.test(msg)) return toast('Esta función aún no está activa en el servidor. Avísale al administrador.');
+  if (/payload too large|exceeded|413/i.test(msg)) return toast('La foto es muy pesada. Prueba con otra.');
+  if (/fetch|network|Failed to/i.test(msg)) return toast('Sin conexión. Revisa tu internet e intenta de nuevo.');
+  toast('No se pudo guardar' + (msg ? ': ' + String(msg).slice(0, 90) : '. Intenta de nuevo.'));
 }
 
 // =============== WebGL ===============
@@ -2267,6 +2274,7 @@ function setupDbChat(db){
 // ---------- Supabase backend ----------
 function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.append(s); }); }
 function dataUrlToBlob(u){ const [h, b] = u.split(','); const bin = atob(b); const a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return new Blob([a], {type: (h.match(/data:(.*?);/) || [])[1] || 'image/jpeg'}); }
+const missingCol = e => e && (e.code === '42703' || e.code === 'PGRST204' || /birth_date|death_date/.test(e.message || ''));
 const sbErr = e => { if (!e) return e; if (e.code === '23505') return {code: 'taken'}; if (e.code === '42501' || /row-level security|JWT|not authorized/i.test(e.message || '')) return {code: 'auth'}; return e; };
 async function setupSupabase(){
   if (!window.supabase) await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
@@ -2333,15 +2341,26 @@ async function setupSupabase(){
         if (up.error) throw sbErr(up.error);
         photo_url = sb.storage.from('photos').getPublicUrl(path).data.publicUrl;
       }
-      const {error} = await sb.from('pets').insert({idx, name: v.name, species: v.species, born: v.born, died: v.died, epitaph: v.epitaph, photo_url, by_name: v.by || null, birth_date: v.bdate || null, death_date: v.ddate || null});
+      const base = {name: v.name, species: v.species, born: v.born, died: v.died, epitaph: v.epitaph, photo_url, by_name: v.by || null};
+      const dates = {birth_date: v.bdate || null, death_date: v.ddate || null};
+      let error, tries = 0;
+      while (tries++ < 6) {
+        ({error} = await sb.from('pets').insert(S.noDates ? {idx, ...base} : {idx, ...base, ...dates}));
+        if (error && missingCol(error)) { S.noDates = true; continue; }
+        if (error && error.code === '23505') { await loadPets(); idx = firstFree(); v.newIdx = idx; continue; }
+        break;
+      }
       if (error) throw sbErr(error);
       await loadPets();
     },
     async updatePet(idx, f){
       needUser();
-      const row = {name: f.name, species: f.species, born: f.born, died: f.died, epitaph: f.epitaph, birth_date: f.bdate || null, death_date: f.ddate || null};
+      const row = {name: f.name, species: f.species, born: f.born, died: f.died, epitaph: f.epitaph};
+      if (!S.noDates) Object.assign(row, {birth_date: f.bdate || null, death_date: f.ddate || null});
       if (f.photo && f.photo.startsWith('data:')) row.photo_url = await uploadPhoto(f.photo);
-      const {error} = await sb.from('pets').update(row).eq('idx', idx); if (error) throw sbErr(error); await loadPets();
+      let {error} = await sb.from('pets').update(row).eq('idx', idx);
+      if (error && missingCol(error)) { S.noDates = true; delete row.birth_date; delete row.death_date; ({error} = await sb.from('pets').update(row).eq('idx', idx)); }
+      if (error) throw sbErr(error); await loadPets();
     },
     async addMemory(pet, m){ needUser(); const photo_url = m.photo ? await uploadPhoto(m.photo) : null; const {error} = await sb.from('memories').insert({pet_id: pet, text: m.text || null, photo_url, author: m.author || null}); if (error) throw sbErr(error); await loadMems(); },
     async removeMemory(m){ const {error} = await sb.from('memories').delete().eq('id', m.id); if (error) throw sbErr(error); await loadMems(); },
