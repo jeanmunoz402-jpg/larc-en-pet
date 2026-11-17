@@ -1330,7 +1330,7 @@ function update(dt){
       if (d < 3.1 && (mx * cx + mz * cz) / d > 0) { let tx = -cz / d, tz = cx / d; if (tx * mx + tz * mz < 0) { tx = -tx; tz = -tz; } const sp = Math.hypot(mx, mz), k = clamp((3.1 - d) / .6, 0, 1); mx = mx * (1 - k) + tx * sp * k; mz = mz * (1 - k) + tz * sp * k; }
     }
   }
-  a.moving = Math.hypot(mx, mz) > .05;
+  a.moving = Math.hypot(mx, mz) > .05; a.vx = a.moving ? mx : 0; a.vz = a.moving ? mz : 0;
   if (a.moving) { a.x += mx * dt; a.z += mz * dt; a.yaw += angDiff(a.yaw, Math.atan2(mx, mz)) * Math.min(1, dt * 10); a.walk += dt * 9; }
   else { a.walk = 0; if (S.cam.tyaw != null && !S.customizing) a.yaw += angDiff(a.yaw, S.cam.tyaw) * Math.min(1, dt * 6); }
   const B = bounds(); a.x = clamp(a.x, B.x0, B.x1); a.z = clamp(a.z, B.z0, B.z1);
@@ -1547,20 +1547,31 @@ function upsertPeer(p){
   let q = peers.get(p.peer);
   const x = clamp(+pr.x || 0, -8, 8), z = clamp(+pr.z || 0, -1, 30), yaw = +pr.r || 0;
   if (!q) { q = {x, z, yaw, walk: 0, ph: Math.random() * 6}; peers.set(p.peer, q); }
+  const fresh = q.lastMoveT && performance.now() - q.lastMoveT < 2000 && q.f === pr.f;
   if (q.f !== pr.f) { q.x = x; q.z = z; }
-  q.f = pr.f; q.tx = x; q.tz = z; q.tyaw = yaw; q.mv = !!pr.m; q.look = parseLook(pr.l); q.name = str(pr.n, 22).trim() || 'Visitante';
+  if (!fresh) { q.tx = x; q.tz = z; q.tyaw = yaw; q.mv = !!pr.m; q.vx = q.vz = 0; }
+  q.f = pr.f; q.look = parseLook(pr.l); q.name = str(pr.n, 22).trim() || 'Visitante';
   if (typeof pr.e === 'string' && EMOTES.includes(pr.e) && pr.et !== q.lastE) { if (q.lastE !== undefined || Date.now() - (+pr.et || 0) < 4000) q.emoUntil = performance.now() + 3500; q.lastE = pr.et; q.emo = pr.e; }
+}
+function applyMove(p){
+  if (!p || typeof p.k !== 'string') return;
+  const q = peers.get(p.k); if (!q || !Number.isInteger(p.f)) return;
+  if (q.f !== p.f) { q.f = p.f; q.x = clamp(+p.x || 0, -8, 8); q.z = clamp(+p.z || 0, -1, 30); }
+  q.tx = clamp(+p.x || 0, -8, 8); q.tz = clamp(+p.z || 0, -1, 30); q.tyaw = +p.r || 0; q.mv = !!p.m;
+  q.vx = clamp(+p.vx || 0, -4, 4); q.vz = clamp(+p.vz || 0, -4, 4); q.lastMoveT = performance.now();
 }
 function updatePeers(dt){
   for (const q of peers.values()) {
-    const dx = q.tx - q.x, dz = q.tz - q.z, d = Math.hypot(dx, dz);
-    if (d > 3) { q.x = q.tx; q.z = q.tz; } else { q.x += dx * Math.min(1, dt * 8); q.z += dz * Math.min(1, dt * 8); }
-    q.yaw += angDiff(q.yaw, q.tyaw) * Math.min(1, dt * 8);
+    const age = q.lastMoveT && q.mv ? Math.min((performance.now() - q.lastMoveT) / 1000, .35) : 0;
+    const px = q.tx + (q.vx || 0) * age, pz = q.tz + (q.vz || 0) * age;
+    const dx = px - q.x, dz = pz - q.z, d = Math.hypot(dx, dz);
+    if (d > 3) { q.x = px; q.z = pz; } else { const k = Math.min(1, dt * 12); q.x += dx * k; q.z += dz * k; }
+    q.yaw += angDiff(q.yaw, q.tyaw) * Math.min(1, dt * 10);
     q.moving = q.mv || d > .05; if (q.moving) q.walk += dt * 9; else q.walk = 0;
   }
 }
-let lastSent = '', lastSentT = 0, lastBeat = 0;
-setInterval(() => { if (!S.presence || !S.started) return; if (Date.now() - lastBeat > 12000) { lastBeat = Date.now(); lastSent = ''; } sendPresence(); }, 700);
+let lastSent = '', lastSentT = 0, lastBeat = 0, lastMoveSent = 0, lastMeta = '', lastTrack = 0;
+setInterval(() => { if (!S.presence || !S.started) return; if (Date.now() - lastBeat > 12000) { lastBeat = Date.now(); lastSent = ''; lastMeta = ''; } sendPresence(); }, 700);
 function sendPresence(){
   if (!S.presence || !S.started) return;
   const now = performance.now(); if (now - lastSentT < (S.presence.rate || 110)) return;
@@ -1569,6 +1580,19 @@ function sendPresence(){
   if (S.myEmo) { pr.e = S.myEmo; pr.et = S.myEmoT; }
   pr.u = myUid(); const v = currentVisit(); if (v) pr.v = v;
   if (S.mySay && Date.now() - S.mySayT < 8000) { pr.s = S.mySay; pr.st = S.mySayT; }
+  if (S.presence.move) {
+    // fast lane: position ~12 times per second while walking (and once when stopping)
+    if ((a.moving || S.wasMoving) && now - lastMoveSent > 80) {
+      lastMoveSent = now; S.wasMoving = a.moving;
+      Promise.resolve(S.presence.move({f: pr.f, x: pr.x, z: pr.z, r: pr.r, m: pr.m, vx: Math.round((a.vx || 0) * 100) / 100, vz: Math.round((a.vz || 0) * 100) / 100})).catch(() => {});
+    }
+    // slow lane: who you are + where you are, for people who arrive later
+    const meta = JSON.stringify({...pr, x: 0, z: 0, r: 0, m: 0});
+    if (meta === lastMeta && (a.moving ? now - lastTrack < 3000 : (JSON.stringify(pr) === lastSent || now - lastTrack < 600))) return;
+    lastMeta = meta; lastTrack = now; lastSent = JSON.stringify(pr); lastSentT = now;
+    Promise.resolve(S.presence.send(pr)).catch(() => {});
+    return;
+  }
   const k = JSON.stringify(pr); if (k === lastSent) return;
   lastSent = k; lastSentT = now;
   Promise.resolve(S.presence.send(pr)).catch(() => {});
@@ -2133,7 +2157,7 @@ function loadScript(src){ return new Promise((res, rej) => { const s = document.
 function dataUrlToBlob(u){ const [h, b] = u.split(','); const bin = atob(b); const a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return new Blob([a], {type: (h.match(/data:(.*?);/) || [])[1] || 'image/jpeg'}); }
 const sbErr = e => { if (!e) return e; if (e.code === '23505') return {code: 'taken'}; if (e.code === '42501' || /row-level security|JWT|not authorized/i.test(e.message || '')) return {code: 'auth'}; return e; };
 async function setupSupabase(){
-  await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
+  if (!window.supabase) await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
   const sb = window.supabase.createClient(LARC.supabaseUrl, LARC.supabaseKey, {auth: {persistSession: true, detectSessionInUrl: true}});
   S.sb = sb;
   const {data: {session}} = await sb.auth.getSession(); S.user = session ? session.user : null;
@@ -2146,7 +2170,7 @@ async function setupSupabase(){
   async function loadChat(){ const {data} = await sb.from('chat_messages').select('*').eq('hidden', false).order('created_at', {ascending: false}).limit(300); onChatData((data || []).map(toChat).filter(Boolean)); }
   try { await Promise.all([loadPets(), loadOffs(), loadChat()]); } catch (e) { console.error(e); toast(/schema cache|does not exist|relation|PGRST205|42P01/i.test((e && (e.message || e.code)) || '') ? 'Falta crear la base de datos: ejecuta supabase/schema.sql en Supabase.' : 'No se pudo cargar el memorial. Revisa la conexión.'); }
   // Live connections use their own client without the user session, so a sign-in never breaks them.
-  const rt = window.supabase.createClient(LARC.supabaseUrl, LARC.supabaseKey, {auth: {persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'larc-live'}});
+  const rt = window.supabase.createClient(LARC.supabaseUrl, LARC.supabaseKey, {auth: {persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'larc-live'}, realtime: {params: {eventsPerSecond: 25}}});
   S.rt = rt;
   rt.channel('larc-db')
     .on('postgres_changes', {event: '*', schema: 'public', table: 'pets'}, () => loadPets().catch(() => {}))
@@ -2159,7 +2183,8 @@ async function setupSupabase(){
   let ch = null, retry = 0;
   const joinPresence = () => {
     if (ch) { try { rt.removeChannel(ch); } catch {} }
-    ch = rt.channel('larc-presence', {config: {presence: {key}}});
+    ch = rt.channel('larc-presence', {config: {presence: {key}, broadcast: {self: false, ack: false}}});
+    ch.on('broadcast', {event: 'mv'}, ({payload}) => applyMove(payload));
     ch.on('presence', {event: 'sync'}, () => {
       const st = ch.presenceState(), list = [];
       for (const [k, metas] of Object.entries(st)) { if (k === key || !metas || !metas.length) continue; list.push({peer: k, presence: metas[metas.length - 1]}); }
@@ -2167,7 +2192,7 @@ async function setupSupabase(){
     });
     S.liveStatus = 'connecting'; updatePeople();
     ch.subscribe(status => {
-      if (status === 'SUBSCRIBED') { retry = 0; S.liveStatus = 'ok'; S.presence = {kind: 'supabase', send: pr => ch.track(pr), rate: 220}; lastSent = ''; sendPresence(); updatePeople(); }
+      if (status === 'SUBSCRIBED') { retry = 0; S.liveStatus = 'ok'; S.presence = {kind: 'supabase', send: pr => ch.track(pr), move: p => ch.send({type: 'broadcast', event: 'mv', payload: {...p, k: key}}), rate: 60}; lastSent = ''; sendPresence(); updatePeople(); }
       else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
         console.warn('larc-presence', status); S.liveStatus = 'error'; S.presence = null; updatePeople();
         if (status !== 'CLOSED' || retry < 8) setTimeout(joinPresence, Math.min(30000, 2000 * 2 ** retry++));
