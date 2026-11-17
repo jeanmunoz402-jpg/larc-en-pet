@@ -200,6 +200,7 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
 .ptab.sel{background:linear-gradient(180deg,#fff4d9,#ffe2a6);border-color:var(--gold2);color:#5a3a12}
 .ptab-body{animation:up .2s ease-out}
 .dates{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:#6b4a3a;font-weight:700;margin:4px 0 0}
+.daily{background:#fff7ea;border:1px solid #f1dfc3;border-radius:16px;padding:10px 12px;margin:2px 0 10px}.daily .dhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}.daily .dhead b{color:#6b3f1d;font-size:14px}.daily .dhead small{color:#7a6058;font-size:12.5px}.daily .dchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.daily .dchips span{font-size:13px;padding:5px 10px;border-radius:999px;background:#f3e8da;color:#6e5850}.daily .dchips span.ok{background:#fbe2b0;color:#5b3a16;font-weight:700}.done{filter:saturate(.35);opacity:.8;cursor:default}
 .candlebtn{width:100%;padding:15px;font-size:17px;margin:4px 0 10px}
 .ptab-body > .ghost{width:100%;margin-top:4px}
 .memform{background:#fbf3e9;border:1px solid #f0e2d0;border-radius:16px;padding:12px;margin:6px 0 14px}
@@ -390,9 +391,21 @@ function cleanPet(id, v){
 function cleanOff(v){
   if (!v || typeof v.pet !== 'string') return null;
   const kind = ['candle','flower','message','gift'].includes(v.kind) ? v.kind : null; if (!kind) return null;
-  return { pet: v.pet, kind, text: kind === 'gift' ? (GIFTS.includes(v.text) ? v.text : '🎾') : str(v.text, 400), author: str(v.author, 40), at: +v.at || 0,
+  return { pet: v.pet, kind, text: kind === 'gift' ? (GIFTS.includes(v.text) ? v.text : '🎾') : str(v.text, 400), author: str(v.author, 40), at: +v.at || 0, uid: str(v.uid, 64),
     color: /^#[0-9a-f]{6}$/i.test(v.color) ? v.color : '#f4a6c0' };
 }
+// ---------- una ofrenda de cada tipo por día y por memorial ----------
+const DAILY = {candle: 'una velita', flower: 'una flor', gift: 'un regalo', message: 'un mensaje'};
+const dayKey = t => { const d = new Date(t); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
+const givenKey = (pet, kind) => 'aac-g-' + dayKey(Date.now()) + '-' + myUid() + '-' + pet + '-' + kind;
+function givenToday(pet, kind){
+  if (!DAILY[kind]) return false;
+  if (store.get(givenKey(pet, kind))) return true;
+  const k = dayKey(Date.now()), me = myUid();
+  return S.offerings.some(o => o.pet === pet && o.kind === kind && o.uid && o.uid === me && dayKey(o.at) === k);
+}
+const markGiven = (pet, kind) => store.set(givenKey(pet, kind), '1');
+function untilTomorrow(){ const n = new Date(), t = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1), m = Math.max(1, Math.ceil((t - n) / 60000)); return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`; }
 const statsOf = id => S.stats.get(id) || {candles: 0, lit: 0, flowers: [], gifts: [], messages: []};
 function onData(){
   const st = new Map(), now = Date.now(); let candles = 0, msgs = 0;
@@ -482,6 +495,7 @@ async function initBackend(){
 }
 function writeError(e){
   if (e && e.code === 'taken') return toast('Alguien acaba de ocupar este lugar. Elige otro.');
+  if (e && e.code === 'daily') return toast(`Hoy ya dejaste esto en este memorial. Vuelve en ${untilTomorrow()} 💛`);
   if (e && e.code === 'invalid_argument') { S.readonly = true; return toast('Puedes visitar, pero no escribir. Pide al dueño acceso de Colaborador.'); }
   if (e && e.code === 'quota_exceeded') return toast('El memorial llegó a su capacidad máxima.');
   const msg = (e && (e.message || e.error_description || e.code)) || '';
@@ -1861,9 +1875,11 @@ function openPet(id){
   let busy = false;
   const give = async (kind, extra = {}) => {
     if (busy) return; const pet = S.pets.get(id); if (!pet || !S.backend) return;
+    if (givenToday(id, kind)) { toast(`Hoy ya le dejaste ${DAILY[kind]} a ${pet.name}. Podrás dejarle otra en ${untilTomorrow()} 💛`); return; }
     busy = true; S.lastGiveAt = Date.now();
     try {
-      await S.backend.addOffering({pet: id, kind, at: Date.now(), author: str(authorName(), 40), ...extra});
+      await S.backend.addOffering({pet: id, kind, at: Date.now(), author: str(authorName(), 40), uid: myUid(), ...extra});
+      markGiven(id, kind); setTimeout(() => S.modalRefresh && S.modalRefresh(), 60);
       toast(kind === 'candle' ? `Encendiste una velita para ${pet.name} 🕯️` : kind === 'flower' ? `Dejaste una flor para ${pet.name}` : kind === 'gift' ? `Le dejaste un regalo a ${pet.name} ${extra.text}` : 'Tu mensaje quedó junto a ' + pet.name);
       return true;
     } catch (e) { writeError(e); } finally { busy = false; }
@@ -2275,7 +2291,7 @@ function setupDbChat(db){
 function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.append(s); }); }
 function dataUrlToBlob(u){ const [h, b] = u.split(','); const bin = atob(b); const a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return new Blob([a], {type: (h.match(/data:(.*?);/) || [])[1] || 'image/jpeg'}); }
 const missingCol = e => e && (e.code === '42703' || e.code === 'PGRST204' || /birth_date|death_date/.test(e.message || ''));
-const sbErr = e => { if (!e) return e; if (e.code === '23505') return {code: 'taken'}; if (e.code === '42501' || /row-level security|JWT|not authorized/i.test(e.message || '')) return {code: 'auth'}; return e; };
+const sbErr = e => { if (!e) return e; if (/daily_limit/.test(e.message || '')) return {code: 'daily'}; if (e.code === '23505') return {code: 'taken'}; if (e.code === '42501' || /row-level security|JWT|not authorized/i.test(e.message || '')) return {code: 'auth'}; return e; };
 async function setupSupabase(){
   if (!window.supabase) await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
   const sb = window.supabase.createClient(LARC.supabaseUrl, LARC.supabaseKey, {auth: {persistSession: true, detectSessionInUrl: true}});
@@ -2288,7 +2304,7 @@ async function setupSupabase(){
   async function loadMems(){ const {data} = await sb.from('memories').select('*').order('created_at', {ascending: false}).limit(800); if (data) setMemories(data.map(toMem)); }
   async function loadSvcs(){ const {data} = await sb.from('services').select('*').limit(300); if (data) setServices(data.map(toSvc)); }
   async function uploadPhoto(dataUrl){ const path = `${S.user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 6)}.jpg`; const up = await sb.storage.from('photos').upload(path, dataUrlToBlob(dataUrl), {contentType: 'image/jpeg', upsert: false}); if (up.error) throw sbErr(up.error); return sb.storage.from('photos').getPublicUrl(path).data.publicUrl; }
-  const toOff = r => cleanOff({pet: r.pet_id, kind: r.kind, text: r.text, color: r.color, author: r.author, at: Date.parse(r.created_at) || 0});
+  const toOff = r => cleanOff({pet: r.pet_id, kind: r.kind, text: r.text, color: r.color, author: r.author, uid: r.user_id || '', at: Date.parse(r.created_at) || 0});
   const toChat = r => cleanChat({room: r.room, text: r.text, author: r.author, uid: r.user_id, at: Date.parse(r.created_at) || 0}, r.id);
   async function loadPets(){ const {data, error} = await sb.from('pets').select('*').order('idx'); if (error) throw error; const m = new Map(); for (const r of data) { const p = toPet(r); if (p) { p.owner = r.owner; m.set(p.id, p); } } S.pets = m; onData(); }
   async function loadOffs(){ const {data, error} = await sb.from('offerings').select('*').order('created_at', {ascending: false}).limit(1000); if (error) throw error; S.offerings = data.map(toOff).filter(Boolean); onData(); }
@@ -2370,7 +2386,7 @@ async function setupSupabase(){
     async listRequests(){ const {data, error} = await sb.from('service_requests').select('*').order('created_at', {ascending: false}).limit(200); if (error) throw sbErr(error); return data.map(r => cleanReq({name: r.name, cat: r.category, city: r.city, contact: r.contact, desc: r.description, at: Date.parse(r.created_at) || 0}, r.id)); },
     async removeRequest(id){ const {error} = await sb.from('service_requests').delete().eq('id', id); if (error) throw sbErr(error); },
     async addOffering(o){
-      if (o.kind === 'message') needUser();
+      needUser();
       const {error} = await sb.from('offerings').insert({pet_id: o.pet, kind: o.kind, text: o.text || null, color: o.color || null, author: o.author || null});
       if (error) throw sbErr(error);
     },
@@ -2521,12 +2537,14 @@ openPet = function(id){
   let busy = false;
   const give = async (kind, extra = {}) => {
     if (busy) return; const pet = S.pets.get(id); if (!pet || !S.backend) return;
+    if (givenToday(id, kind)) { toast(`Hoy ya le dejaste ${DAILY[kind]} a ${pet.name}. Podrás dejarle otra en ${untilTomorrow()} 💛`); return; }
     busy = true; S.lastGiveAt = Date.now();
     try {
-      await S.backend.addOffering({pet: id, kind, at: Date.now(), author: str(authorName(), 40), ...extra});
+      await S.backend.addOffering({pet: id, kind, at: Date.now(), author: str(authorName(), 40), uid: myUid(), ...extra});
+      markGiven(id, kind); setTimeout(() => S.modalRefresh && S.modalRefresh(), 60);
       toast(kind === 'candle' ? `Encendiste una velita para ${pet.name} 🕯️` : kind === 'flower' ? `Dejaste una flor para ${pet.name}` : kind === 'gift' ? `Le dejaste un regalo a ${pet.name} ${extra.text}` : 'Tu mensaje quedó en el libro de ' + pet.name);
       return true;
-    } catch (e) { writeError(e); } finally { busy = false; }
+    } catch (e) { if (e && e.code === 'daily') { markGiven(id, kind); S.modalRefresh && S.modalRefresh(); } writeError(e); } finally { busy = false; }
   };
   S.visiting = id; lastSent = '';
   if (S.lastPetOpened !== id) { S.petTab = 'homenaje'; S.lastPetOpened = id; }
@@ -2553,9 +2571,17 @@ openPet = function(id){
     return [head, banner, tabs, body];
   });
 };
+function dailyCard(pet){
+  const items = [['candle', '🕯️', 'Velita'], ['flower', '🌸', 'Flor'], ['gift', '🎁', 'Regalo'], ['message', '💌', 'Mensaje']];
+  const done = items.filter(([k]) => givenToday(pet.id, k)).length;
+  return el('div', {class: 'daily'},
+    el('div', {class: 'dhead'}, el('b', {text: 'Tu ofrenda de hoy'}), el('small', {text: done === 4 ? `Completa · se renueva en ${untilTomorrow()}` : `${done} de 4 · una de cada una por día`})),
+    el('div', {class: 'dchips'}, items.map(([k, e, t]) => { const ok = givenToday(pet.id, k); return el('span', {class: ok ? 'ok' : ''}, ok ? '✓ ' : e + ' ', t); })));
+}
 function tributeTab(pet, st, give, idx){
-  const flowerBtn = el('button', {class: 'ghost', on: {click: () => give('flower', {color: FLOWERS[flowerSel][0]})}}, FLOWERS[flowerSel][1] + ' Dejar flor');
-  const giftBtn = el('button', {class: 'ghost', on: {click: () => give('gift', {text: GIFTS[giftSel]})}}, GIFTS[giftSel] + ' Dejar regalo');
+  const fDone = givenToday(pet.id, 'flower'), gDone = givenToday(pet.id, 'gift'), cDone = givenToday(pet.id, 'candle');
+  const flowerBtn = el('button', {class: 'ghost' + (fDone ? ' done' : ''), on: {click: () => give('flower', {color: FLOWERS[flowerSel][0]})}}, fDone ? '✓ Flor de hoy' : FLOWERS[flowerSel][1] + ' Dejar flor');
+  const giftBtn = el('button', {class: 'ghost' + (gDone ? ' done' : ''), on: {click: () => give('gift', {text: GIFTS[giftSel]})}}, gDone ? '✓ Regalo de hoy' : GIFTS[giftSel] + ' Dejar regalo');
   const pick = (label, list, sel, onSel) => { const row = el('div', {class: 'picker'}, el('small', {}, label)); list.forEach((e, k) => row.append(el('button', {class: k === sel ? 'sel' : '', 'aria-label': e, on: {click: () => { onSel(k); row.querySelectorAll('button').forEach((b, j) => b.classList.toggle('sel', j === k)); }}}, e))); return row; };
   const lanternBtn = el('button', {class: 'ghost', on: {click: () => {
     const s = SLOT_S(idx % SLOTS), zc = SLOT_Z(idx % SLOTS);
@@ -2569,23 +2595,27 @@ function tributeTab(pet, st, give, idx){
       el('span', {}, '🕯️ ', el('b', {text: String(st.lit)}), ' encendidas'),
       el('span', {}, '🌸 ', el('b', {text: String(st.flowers.length)}), ' flores'),
       el('span', {}, '🎁 ', el('b', {text: String(st.gifts.length)}), ' regalos')),
-    el('button', {class: 'btn candlebtn', on: {click: () => give('candle')}}, '🕯️ Encender una velita'),
+    dailyCard(pet),
+    el('button', {class: 'btn candlebtn' + (cDone ? ' done' : ''), on: {click: () => give('candle')}}, cDone ? '✓ Tu velita de hoy ya está encendida' : '🕯️ Encender una velita'),
     el('div', {class: 'actions'}, flowerBtn, giftBtn),
-    pick('Flor', FLOWERS.map(f => f[1]), flowerSel, k => { flowerSel = k; flowerBtn.textContent = FLOWERS[k][1] + ' Dejar flor'; }),
-    pick('Regalo', GIFTS, giftSel, k => { giftSel = k; giftBtn.textContent = GIFTS[k] + ' Dejar regalo'; }),
+    fDone ? null : pick('Flor', FLOWERS.map(f => f[1]), flowerSel, k => { flowerSel = k; flowerBtn.textContent = FLOWERS[k][1] + ' Dejar flor'; }),
+    gDone ? null : pick('Regalo', GIFTS, giftSel, k => { giftSel = k; giftBtn.textContent = GIFTS[k] + ' Dejar regalo'; }),
     lanternBtn,
-    el('p', {class: 'muted', style: 'margin-top:16px'}, 'Memorial creado' + (pet.by ? ' por ' + pet.by : '') + (pet.at ? ' el ' + fmtDate(pet.at) : '') + '. Las velitas brillan 30 días; los faroles se elevan y no se guardan.'));
+    el('p', {class: 'muted', style: 'margin-top:16px'}, 'Memorial creado' + (pet.by ? ' por ' + pet.by : '') + (pet.at ? ' el ' + fmtDate(pet.at) : '') + '. Cada día puedes dejarle una velita, una flor, un regalo y un mensaje. Las velitas brillan 30 días; los faroles son libres y no se guardan.'));
 }
 function guestbookTab(pet, st, give){
   const nameIn = el('input', {maxlength: 40, placeholder: 'Tu nombre (opcional)', value: authorName()});
   const txt = el('textarea', {maxlength: 280, placeholder: 'Escribe unas palabras para ' + pet.name + '…'});
-  const sendBtn = el('button', {class: 'btn', style: 'width:100%;margin-top:10px', on: {click: async () => {
+  const mDone = givenToday(pet.id, 'message');
+  if (mDone) { txt.disabled = true; txt.placeholder = `Hoy ya firmaste el libro de ${pet.name}. Mañana podrás escribirle otra vez.`; }
+  const sendBtn = el('button', {class: 'btn' + (mDone ? ' done' : ''), style: 'width:100%;margin-top:10px', on: {click: async () => {
+    if (mDone) return give('message', {});
     const text = cleanText(txt.value, 280); if (!text) return txt.focus();
     store.set('aac-name', nameIn.value.trim().slice(0, 40));
     sendBtn.disabled = true; const ok = await give('message', {text}); sendBtn.disabled = false;
     if (ok) { txt.value = ''; txt.blur(); nameIn.blur(); S.modalRefresh && S.modalRefresh(); }
-  }}}, 'Firmar el libro de visitas');
-  return el('div', {class: 'ptab-body'}, txt, nameIn, sendBtn,
+  }}}, mDone ? `✓ Ya firmaste hoy · vuelve en ${untilTomorrow()}` : 'Firmar el libro de visitas');
+  return el('div', {class: 'ptab-body'}, txt, mDone ? null : nameIn, sendBtn,
     st.messages.length ? st.messages.slice(0, 80).map(m => el('div', {class: 'msg'}, el('p', {text: m.text}), el('small', {text: (m.author ? '— ' + m.author + ' · ' : '') + fmtDate(m.at)})))
       : el('p', {class: 'muted', style: 'text-align:center;margin:20px 0'}, 'Aún no hay mensajes. Sé el primero en dejar unas palabras.'));
 }
