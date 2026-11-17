@@ -1576,7 +1576,10 @@ function sendPresence(){
 function updatePeople(){
   const el2 = $('people'); if (!el2) return;
   renderChatTabs && renderChatTabs();
-  if (!S.presence) { el2.classList.add('hidden'); return; }
+  if (!S.presence) {
+    if (S.liveStatus === 'connecting' || S.liveStatus === 'error') { el2.classList.remove('hidden'); el2.textContent = S.liveStatus === 'error' ? '⚠️ reconectando en vivo…' : '👥 conectando…'; return; }
+    el2.classList.add('hidden'); return;
+  }
   const n = peers.size; el2.classList.remove('hidden');
   el2.textContent = n ? `👥 ${n + 1} visitantes ahora` : '👥 solo tú ahora';
 }
@@ -2142,21 +2145,37 @@ async function setupSupabase(){
   async function loadOffs(){ const {data, error} = await sb.from('offerings').select('*').order('created_at', {ascending: false}).limit(1000); if (error) throw error; S.offerings = data.map(toOff).filter(Boolean); onData(); }
   async function loadChat(){ const {data} = await sb.from('chat_messages').select('*').eq('hidden', false).order('created_at', {ascending: false}).limit(300); onChatData((data || []).map(toChat).filter(Boolean)); }
   try { await Promise.all([loadPets(), loadOffs(), loadChat()]); } catch (e) { console.error(e); toast(/schema cache|does not exist|relation|PGRST205|42P01/i.test((e && (e.message || e.code)) || '') ? 'Falta crear la base de datos: ejecuta supabase/schema.sql en Supabase.' : 'No se pudo cargar el memorial. Revisa la conexión.'); }
-  sb.channel('larc-db')
+  // Live connections use their own client without the user session, so a sign-in never breaks them.
+  const rt = window.supabase.createClient(LARC.supabaseUrl, LARC.supabaseKey, {auth: {persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'larc-live'}});
+  S.rt = rt;
+  rt.channel('larc-db')
     .on('postgres_changes', {event: '*', schema: 'public', table: 'pets'}, () => loadPets().catch(() => {}))
     .on('postgres_changes', {event: 'INSERT', schema: 'public', table: 'offerings'}, ({new: r}) => { const o = toOff(r); if (o) { S.offerings = [o, ...S.offerings].slice(0, 1500); onData(); } })
     .on('postgres_changes', {event: 'DELETE', schema: 'public', table: 'offerings'}, () => loadOffs().catch(() => {}))
     .on('postgres_changes', {event: '*', schema: 'public', table: 'chat_messages'}, () => loadChat().catch(() => {}))
-    .subscribe();
+    .subscribe(st => { if (st !== 'SUBSCRIBED') console.warn('larc-db', st); });
   // presence
   const key = myId() + '-' + Math.random().toString(36).slice(2, 6);
-  const ch = sb.channel('larc-presence', {config: {presence: {key}}});
-  ch.on('presence', {event: 'sync'}, () => {
-    const st = ch.presenceState(), list = [];
-    for (const [k, metas] of Object.entries(st)) { if (k === key || !metas || !metas.length) continue; list.push({peer: k, presence: metas[metas.length - 1]}); }
-    presenceUpdate(list);
-  });
-  ch.subscribe(status => { if (status === 'SUBSCRIBED') { S.presence = {kind: 'supabase', send: pr => ch.track(pr), rate: 220}; lastSent = ''; updatePeople(); } });
+  let ch = null, retry = 0;
+  const joinPresence = () => {
+    if (ch) { try { rt.removeChannel(ch); } catch {} }
+    ch = rt.channel('larc-presence', {config: {presence: {key}}});
+    ch.on('presence', {event: 'sync'}, () => {
+      const st = ch.presenceState(), list = [];
+      for (const [k, metas] of Object.entries(st)) { if (k === key || !metas || !metas.length) continue; list.push({peer: k, presence: metas[metas.length - 1]}); }
+      presenceUpdate(list);
+    });
+    S.liveStatus = 'connecting'; updatePeople();
+    ch.subscribe(status => {
+      if (status === 'SUBSCRIBED') { retry = 0; S.liveStatus = 'ok'; S.presence = {kind: 'supabase', send: pr => ch.track(pr), rate: 220}; lastSent = ''; sendPresence(); updatePeople(); }
+      else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+        console.warn('larc-presence', status); S.liveStatus = 'error'; S.presence = null; updatePeople();
+        if (status !== 'CLOSED' || retry < 8) setTimeout(joinPresence, Math.min(30000, 2000 * 2 ** retry++));
+      }
+    });
+  };
+  joinPresence();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { lastSent = ''; if (S.liveStatus === 'error') joinPresence(); } });
   const needUser = () => { if (!S.user) { openLogin(); throw {code: 'silent'}; } };
   S.backend = {
     kind: 'supabase',
