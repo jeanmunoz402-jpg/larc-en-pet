@@ -2214,7 +2214,12 @@ async function sendLink(v, btn){
   if (btn) btn.disabled = true;
   const {error} = await S.sb.auth.signInWithOtp({email: v, options: {emailRedirectTo: location.origin + location.pathname, shouldCreateUser: true}});
   if (btn) btn.disabled = false;
-  if (error) { toast(/rate|seconds|security/i.test(error.message || '') ? 'Espera un minuto antes de pedir otro correo.' : 'No se pudo enviar el correo. Intenta de nuevo.'); return; }
+  if (error) {
+    const m = error.message || '';
+    const sec = (m.match(/after (\d+) seconds/) || [])[1];
+    toast(/email rate limit/i.test(m) ? 'El servidor de correos llegó a su límite por hora. Intenta más tarde.' : sec ? `Por seguridad, espera ${sec} segundos antes de pedir otro correo a esta dirección.` : /security|seconds/i.test(m) ? 'Por seguridad, espera un minuto antes de pedir otro correo.' : /not authorized|address not authorized/i.test(m) ? 'Este correo aún no puede recibir mensajes del servidor. Falta configurar el envío de correos.' : 'No se pudo enviar el correo. Intenta de nuevo.');
+    console.warn('Auth email error:', m); return;
+  }
   S.authEmail = v; store.set('larc-email', v); S.authStep = 'sent'; renderAuth(); toast('📬 Correo enviado. Revisa también la carpeta de spam.');
 }
 function authForm(){
