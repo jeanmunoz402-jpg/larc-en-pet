@@ -186,6 +186,74 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
 .authlinks{display:flex;justify-content:space-between;margin-top:8px}
 .link{background:none;border:0;color:#8a5a2b;text-decoration:underline;font-weight:700;padding:6px 4px;font-size:14px}
 #guestLink{display:block;margin:12px auto 0}
+.sheet.wide{max-width:640px}
+.portrait.asbtn{padding:0;cursor:zoom-in}
+.pactions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.mini{border:1.5px solid #ecdcc8;background:#fff;border-radius:999px;padding:6px 12px;font-weight:800;font-size:13px;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.mini.gold{background:linear-gradient(180deg,#ffe3a3,#e6b45c);border-color:#fff;color:#4a2f06}
+.special{display:flex;gap:12px;align-items:center;background:linear-gradient(90deg,#fff3d6,#ffe9f1);border:1.5px solid #ffe0a3;border-radius:16px;padding:12px 14px;margin:14px 0 4px}
+.special .big{font-size:32px}
+.special b{display:block;color:#6b3f1d}
+.special small{color:var(--muted)}
+.ptabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:16px 0 6px;position:sticky;top:-22px;background:linear-gradient(#fffdf8,#fffdf8ee);padding:8px 0;z-index:2}
+.ptab{border:1.5px solid #ecdcc8;background:#fff;border-radius:12px;padding:10px 4px;font-weight:800;font-size:13.5px;white-space:nowrap}
+.ptab.sel{background:linear-gradient(180deg,#fff4d9,#ffe2a6);border-color:var(--gold2);color:#5a3a12}
+.ptab-body{animation:up .2s ease-out}
+.dates{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:#6b4a3a;font-weight:700;margin:4px 0 0}
+.candlebtn{width:100%;padding:15px;font-size:17px;margin:4px 0 10px}
+.ptab-body > .ghost{width:100%;margin-top:4px}
+.memform{background:#fbf3e9;border:1px solid #f0e2d0;border-radius:16px;padding:12px;margin:6px 0 14px}
+.memrow{display:flex;gap:10px;margin-bottom:10px}
+.memprevbtn{flex:none;width:86px;height:86px;border-radius:14px;border:2px dashed #e0c49a;background:#fff;padding:0;overflow:hidden}
+.memprev{width:100%;height:100%;display:grid;place-items:center;font-size:28px}
+.memprev img{width:100%;height:100%;object-fit:cover}
+.memrow textarea{min-height:86px}
+.memgrid{columns:2 220px;column-gap:10px}
+.memcard{break-inside:avoid;background:#fff;border:1px solid #f0e2d0;border-radius:16px;overflow:hidden;margin:0 0 10px;box-shadow:0 4px 14px #7a4a2a12}
+.memimg{display:block;width:100%;border:0;padding:0;background:none;cursor:zoom-in}
+.memimg img{width:100%;display:block}
+.memcard p{margin:10px 12px 4px;line-height:1.45;white-space:pre-wrap}
+.memcard small{display:block;margin:4px 12px 10px;color:var(--muted)}
+.viewer img{width:100%;max-height:72vh;object-fit:contain;border-radius:14px;background:#f6ece0}
+.cardbox{background:#fbf3e9;border-radius:16px;padding:12px;text-align:center}
+.cardimg{width:min(100%,340px);border-radius:12px;box-shadow:0 10px 30px #7a4a2a33}
+.dl{display:inline-flex;justify-content:center;align-items:center;text-decoration:none;color:var(--ink)}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.tile{display:flex;gap:10px;align-items:center;text-align:left;background:#fff;border:1.5px solid #f0e2d0;border-radius:18px;padding:12px;min-height:72px;box-shadow:0 4px 14px #7a4a2a10}
+.tile:active{transform:scale(.98)}
+.tile.gold{background:linear-gradient(180deg,#fff4d9,#ffe2a6);border-color:#ffe0a3}
+.tile.glow{box-shadow:0 0 0 3px #ffd76a,0 6px 20px #ffb64855}
+.ticon{font-size:26px;width:36px;text-align:center;flex:none}
+.ttext b{display:block;font-size:15px;color:#5a3a20}
+.ttext small{display:block;font-size:12px;color:var(--muted);line-height:1.3;margin-top:2px}
+.svc{background:#fff;border:1px solid #f0e2d0;border-radius:16px;padding:12px 14px;margin:0 0 10px}
+.svc.feat{border-color:#ffd76a;box-shadow:0 0 0 2px #fff1c4}
+.svchead{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.svchead b{font-size:16px;color:#5a3a20}
+.svc p{margin:8px 0 0;line-height:1.45}
+.badge{font-size:11.5px;font-weight:800;background:#fff1c4;color:#8a5a12;border-radius:999px;padding:3px 8px;white-space:nowrap}
+.svcbtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.svcfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fbf3e9;border-radius:16px;padding:12px 14px;margin-top:14px}
+.svcfoot p{margin:0;font-weight:700}
+.adminbox{border:1.5px dashed #d8c3a5;border-radius:16px;padding:12px;margin-top:12px}
+.empty{text-align:center;background:#fbf3e9;border-radius:16px;padding:18px;margin:10px 0;color:var(--muted)}
+.empty p{margin:0 0 10px}
+.helpcard{background:#f5f9ff;border:1.5px solid #dbe8fb;border-radius:16px;padding:12px 14px;margin:0 0 10px}
+.helpcard b{color:#2f4a7a}
+.helpcard p{margin:6px 0 10px;line-height:1.45}
+.tips{padding-left:20px;line-height:1.55;margin:6px 0}
+.tips li{margin:4px 0}
+details.more{background:#fbf3e9;border-radius:14px;padding:10px 12px;margin-top:12px}
+details.more summary{cursor:pointer;font-weight:800;color:#6b3f1d;font-size:14px}
+.col-btns{display:flex;flex-direction:column;gap:6px}
+#candleBanner{position:fixed;left:50%;transform:translateX(-50%);top:calc(104px + env(safe-area-inset-top));z-index:5;background:linear-gradient(90deg,#fff1c4,#ffe0ea);border:2px solid #fff;border-radius:999px;padding:7px 14px;font-weight:800;font-size:12.5px;color:#6b3f1d;box-shadow:0 0 20px #ffd76a88;max-width:92vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:pulse2 2.4s ease-in-out infinite}
+@keyframes pulse2{50%{box-shadow:0 0 34px #ffb648cc}}
+@media (max-width:600px){#candleBanner{top:calc(164px + env(safe-area-inset-top))}}
+#deepIntro{display:flex;gap:14px;align-items:center;text-align:left;background:#fffaf2e6;border:2px solid #fff;border-radius:20px;padding:12px 14px;margin:14px auto 0;max-width:420px;box-shadow:0 8px 24px #7a4a2a22}
+#deepIntro.hidden{display:none}
+#deepIntro .portrait{width:70px;height:86px;font-size:30px;border-width:4px}
+#deepIntro small{display:block;color:var(--muted);font-weight:700}
+#deepIntro b{display:block;font-family:var(--serif);font-size:26px;color:#6b3f1d;line-height:1.1}
 #toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;
   background:#fffaf2;border:2px solid var(--gold2);color:var(--ink);font-weight:700;padding:11px 18px;border-radius:16px;font-size:14px;z-index:40;transition:.3s;pointer-events:none;max-width:90vw;text-align:center;box-shadow:0 8px 26px #3d2c2a33}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -200,18 +268,18 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
   <div class="hudbtns">
     <button class="chip gold" id="addBtn">＋ Añadir mi mascota</button>
     <div class="hudrow">
-      <button class="chip" id="dirBtn">Todas</button>
+      <button class="chip" id="menuBtn" aria-label="Menú">☰ Menú</button>
       <button class="chip" id="hallBtn" title="Volver al hall">🏛 Hall</button>
-      <button class="chip" id="meBtn" aria-label="Mi personaje" title="Mi personaje">👤</button>
       <button class="chip" id="emoBtn" aria-label="Saludar" title="Saludar">😊</button>
       <button class="chip" id="chatBtn" aria-label="Conversar" title="Conversar">💬<i id="chatBadge" class="hidden">0</i></button>
       <button class="chip gold hidden" id="loginBtn">🔑 Iniciar sesión</button>
-      <button class="chip" id="helpBtn" aria-label="Ayuda">?</button>
     </div>
+    <div class="hidden"><button id="dirBtn"></button><button id="meBtn"></button><button id="helpBtn"></button></div>
   </div>
 </div>
 <div id="hint">Toca el suelo para caminar</div>
 <div id="emotes" class="hidden"></div>
+<button id="candleBanner" class="hidden"></button>
 <div id="chat" class="hidden">
   <div class="chead"><div id="chatTabs"></div><button class="close" id="chatClose" aria-label="Cerrar chat">✕</button></div>
   <div id="chatList"></div>
@@ -242,6 +310,7 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
       <div class="stat"><b id="stMsgs">0</b><span>mensajes de cariño</span></div>
     </div>
     <div class="quote">“Nunca se van del todo: nos esperan al otro lado del arcoíris.”</div>
+    <div id="deepIntro" class="hidden"></div>
     <div id="introAuth" class="hidden"></div>
     <div class="introbtns" id="introBtns">
       <button class="btn" id="enterBtn">Entrar al salón</button>
@@ -336,7 +405,7 @@ function onData(){
   }
   S.stats = st; S.dirty = true;
   $('stPets').textContent = S.pets.size; $('stCandles').textContent = candles; $('stMsgs').textContent = msgs;
-  updateHUD(); notifyNew();
+  updateHUD(); notifyNew(); updateDeepIntro && updateDeepIntro();
   if (S.modal && S.modalRefresh) S.modalRefresh();
 }
 
@@ -344,18 +413,30 @@ function setupLocal(){
   const KEY = 'arco-al-cielo-3d-v1';
   let data = {pets: {}, offerings: []};
   try { const raw = store.get(KEY); if (raw) data = JSON.parse(raw) || data; } catch {}
+  data.memories = data.memories || []; data.services = data.services || []; data.requests = data.requests || [];
   const apply = () => {
     S.pets = new Map(); for (const [id, v] of Object.entries(data.pets || {})) { const p = cleanPet(id, v); if (p) S.pets.set(id, p); }
     S.offerings = (data.offerings || []).map(cleanOff).filter(Boolean).sort((a, b) => b.at - a.at);
+    setMemories(data.memories.map(m => cleanMem(m, m.id))); setServices(data.services.map(x => cleanService(x, x.id)));
     onData();
   };
+  const nid = () => 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   const save = () => store.set(KEY, JSON.stringify(data));
   apply();
   S.backend = {
     kind: 'local',
     async createPet(idx, v){ if (data.pets['p' + idx]) throw {code: 'taken'}; data.pets['p' + idx] = v; save(); apply(); },
     async addOffering(o){ data.offerings.push(o); if (data.offerings.length > 3000) data.offerings.shift(); save(); apply(); },
+    async updatePet(idx, f){ const v = data.pets['p' + idx]; if (!v) throw {code: 'missing'}; Object.assign(v, f); save(); apply(); },
+    async addMemory(pet, m){ data.memories.push({id: nid(), pet, ...m, uid: myUid(), at: Date.now()}); save(); apply(); },
+    async removeMemory(m){ data.memories = data.memories.filter(x => x.id !== m.id); save(); apply(); },
+    async addService(x){ data.services.push({id: nid(), ...x, at: Date.now()}); save(); apply(); },
+    async removeService(x){ data.services = data.services.filter(y => y.id !== x.id); save(); apply(); },
+    async requestService(r){ data.requests.push({id: nid(), ...r, at: Date.now()}); save(); },
+    async listRequests(){ return data.requests.map(r => cleanReq(r, r.id)); },
+    async removeRequest(id){ data.requests = data.requests.filter(r => r.id !== id); save(); },
   };
+  S.isAdmin = true;
   $('modeNote').textContent = 'Modo local: lo que dejes se guarda solo en este dispositivo.';
 }
 function setupDb(db){
@@ -376,7 +457,17 @@ function setupDb(db){
       await ref.set(v);
     },
     async addOffering(o){ await offCol.add(o); },
+    async updatePet(idx, f){ await petsCol.doc('p' + idx).update(f); },
+    async addMemory(pet, m){ await db.collection('memories').add({pet, ...m, uid: myUid(), at: Date.now()}); },
+    async removeMemory(m){ await db.collection('memories').doc(m.id).delete(); },
+    async addService(x){ await db.collection('services').add({...x, at: Date.now()}); },
+    async removeService(x){ await db.collection('services').doc(x.id).delete(); },
+    async requestService(r){ await db.collection('service_requests').add({...r, uid: myUid(), at: Date.now()}); },
+    async listRequests(){ const sn = await db.collection('service_requests').orderBy('at', 'desc').limit(200).get(); return sn.docs.map(d => cleanReq(d.data(), d.id)); },
+    async removeRequest(id){ await db.collection('service_requests').doc(id).delete(); },
   };
+  db.collection('memories').orderBy('at', 'desc').limit(800).onSnapshot(sn => setMemories(sn.docs.map(d => cleanMem(d.data(), d.id))), () => {});
+  db.collection('services').limit(300).onSnapshot(sn => setServices(sn.docs.map(d => cleanService(d.data(), d.id))), () => {});
   $('modeNote').textContent = 'Memorial compartido: quienes tengan el enlace verán las mismas velitas, flores y mensajes.';
 }
 function myId(){ let id = store.get('aac-id'); if (!id) { id = 'v' + Math.random().toString(36).slice(2, 10); store.set('aac-id', id); } return id; }
@@ -768,6 +859,8 @@ function buildPlace(k, get, w){
   // glow around the frame grows with love received
   const love = Math.min(1, (st.lit + st.flowers.length * .4 + st.gifts.length * .3 + st.messages.length * .3) / 8);
   fx.glows.push({x: off(.03), y: 2.28, z: zc, s: 2.2 + love * 1.4, c: [1, .85, .55], a: .12 + love * .3});
+  const spDay = specialToday(pet);
+  if (spDay) { fx.glows.push({x: off(.01), y: 2.28, z: zc, s: 4.0, c: [1, .8, .45], a: .32}); fx.cut.push({tex: emojiTex(spDay.emoji), x: off(.18), y: 3.32, z: zc, size: .34}); lightsAll.push({p: [off(.9), 3.1, zc], c: [.45, .34, .16], cand: true}); }
   // flowers in vases
   const fl = st.flowers.slice(-8);
   [-1, 1].forEach((side, si) => {
@@ -1342,7 +1435,7 @@ function update(dt){
   if (inHall()) { const dx = a.x, dz = a.z - FZ, d = Math.hypot(dx, dz); if (d < 2.45) { const k = 2.45 / (d || 1); a.x = dx * k; a.z = FZ + dz * k; } }
   for (const l of S.lanterns) { l.y += dt * .45; l.x += Math.sin(S.t * .8 + l.ph) * dt * .1; l.life -= dt; }
   S.lanterns = S.lanterns.filter(l => l.life > 0);
-  updatePeers(dt);
+  updatePeers(dt); candleHourTick();
   sendPresence();
   updateHUD();
 }
@@ -1811,19 +1904,21 @@ function openPet(id){
     ];
   });
 }
-async function resizePhoto(file){
+async function resizePhoto(file, maxSize = 320){
   const url = URL.createObjectURL(file);
   try {
     const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
-    const max = 320, r = Math.min(1, max / Math.max(img.width, img.height));
+    const max = maxSize, r = Math.min(1, max / Math.max(img.width, img.height));
     const [c, g] = canvas(Math.round(img.width * r), Math.round(img.height * r)); g.drawImage(img, 0, 0, c.width, c.height);
     return c.toDataURL('image/jpeg', 0.8);
   } finally { URL.revokeObjectURL(url); }
 }
 function openCreate(idx){
   if (S.readonly) return toast('Puedes visitar, pero no escribir. Pide al dueño acceso de Colaborador.');
+  if (S.sb && !S.user) { toast('Crea tu cuenta o inicia sesión para añadir a tu mascota.'); return openLogin(); }
   let photo = '';
   const f = {
+    bdate: el('input', {type: 'date'}), ddate: el('input', {type: 'date'}),
     name: el('input', {maxlength: 40, placeholder: 'Ej: Canela'}),
     species: el('select', {}, Object.entries(SPECIES).map(([k, e]) => el('option', {value: k}, e + ' ' + k.charAt(0).toUpperCase() + k.slice(1)))),
     born: el('input', {maxlength: 20, placeholder: 'Ej: 2010'}), died: el('input', {maxlength: 20, placeholder: 'Ej: 2025'}),
@@ -1841,7 +1936,8 @@ function openCreate(idx){
     store.set('aac-name', f.by.value.trim().slice(0, 40));
     save.disabled = true; save.textContent = 'Colgando su foto…';
     try {
-      await S.backend.createPet(idx, {name, species: f.species.value, born: f.born.value.trim(), died: f.died.value.trim(), epitaph: f.epitaph.value.trim(), photo, by: f.by.value.trim(), at: Date.now()});
+      const bdate = f.bdate.value, ddate = f.ddate.value;
+      await S.backend.createPet(idx, {name, species: f.species.value, born: f.born.value.trim() || (bdate ? bdate.slice(0, 4) : ''), died: f.died.value.trim() || (ddate ? ddate.slice(0, 4) : ''), bdate, ddate, epitaph: cleanText(f.epitaph.value, 160), photo, by: f.by.value.trim(), at: Date.now(), owner: myUid()});
       closeModal(); toast(`La foto de ${name} ya está en la pared ✨`);
     } catch (e) { writeError(e); save.disabled = false; save.textContent = 'Colgar su foto'; }
   }}}, 'Colgar su foto');
@@ -1850,7 +1946,10 @@ function openCreate(idx){
     el('p', {class: 'muted', style: 'margin:0'}, `Piso ${Math.floor(idx / SLOTS) + 1}, lugar ${idx % SLOTS + 1}`),
     el('label', {}, 'Foto'), el('div', {class: 'photo-pick'}, prev, el('button', {class: 'ghost', on: {click: () => file.click()}}, 'Elegir foto'), file),
     el('label', {}, 'Nombre *'), f.name, el('label', {}, 'Especie'), f.species,
-    el('div', {class: 'row2'}, el('div', {}, el('label', {}, 'Llegó'), f.born), el('div', {}, el('label', {}, 'Partió'), f.died)),
+    el('div', {class: 'row2'}, el('div', {}, el('label', {}, 'Llegó (año)'), f.born), el('div', {}, el('label', {}, 'Partió (año)'), f.died)),
+    el('details', {class: 'more'}, el('summary', {}, '🎂 Agregar fechas exactas (opcional)'),
+      el('div', {class: 'row2'}, el('div', {}, el('label', {}, 'Nacimiento'), f.bdate), el('div', {}, el('label', {}, 'Partida'), f.ddate)),
+      el('p', {class: 'muted', style: 'margin:6px 0 0;font-size:12.5px'}, 'Su lugar brillará especialmente en su cumpleaños y en el aniversario de su partida.')),
     el('label', {}, 'Unas palabras'), f.epitaph, el('label', {}, 'Creado por'), f.by, save,
   ]);
 }
@@ -1877,6 +1976,7 @@ function openHelp(){
     el('p', {}, '👤 Cambia tu personaje cuando quieras y 😊 saluda a los demás visitantes que estén paseando contigo.'),
     el('button', {class: 'ghost', style: 'width:100%;margin:6px 0 12px', on: {click: () => { closeModal(); runOnboarding(2); }}}, '🎓 Ver el tutorial otra vez'),
     S.sb && S.user ? el('button', {class: 'ghost', style: 'width:100%;margin:0 0 12px', on: {click: async () => { await S.sb.auth.signOut(); closeModal(); toast('Cerraste sesión'); }}}, 'Cerrar sesión (' + (S.user.email || 'cuenta') + ')') : null,
+    el('p', {}, '☰ En el Menú están el buscador, tus mascotas (para editar y sumar recuerdos), la Hora de las velas (21:00), servicios y apoyo en el duelo. Cada memorial tiene un botón 🔗 Compartir con enlace directo y una tarjeta para redes.'),
     el('p', {}, '💬 Con el botón de chat conversas en el hall o junto a una mascota. Tu mensaje también aparece como burbuja sobre tu personaje. Puedes reportar ⚑ o silenciar 🔇 a cualquiera.'),
     el('p', {class: 'muted'}, S.backend && S.backend.kind === 'db' ? 'Este memorial es compartido: lo que dejes lo verán todas las personas con acceso.' : 'Modo local: lo que dejes se guarda solo en este dispositivo.'),
   ]);
@@ -1889,6 +1989,9 @@ function addMine(){
   goToGlobal(idx, true);
 }
 $('dirBtn').onclick = () => !S.modal && openDirectory();
+$('menuBtn').onclick = () => S.started && !S.customizing && openMenu();
+$('candleBanner').onclick = () => openCandleHour();
+setInterval(hallSpecialToast, 2000);
 $('hallBtn').onclick = () => !S.modal && changeFloor(-1);
 $('meBtn').onclick = () => S.started && !S.customizing && openCustomizer(false);
 $('emoBtn').onclick = () => $('emotes').classList.toggle('hidden');
@@ -1900,7 +2003,11 @@ $('guestLink').onclick = () => start();
 EMOTES.forEach(e => $('emotes').append(el('button', {on: {click: () => emote(e)}}, e)));
 $('helpBtn').onclick = () => !S.modal && openHelp();
 $('addBtn').onclick = addMine; $('introAdd').onclick = addMine;
-function start(){ if (S.started) return; S.started = true; $('intro').classList.add('hidden'); if (!store.get('aac-onboarded')) setTimeout(() => runOnboarding(0), 300); else if (!S.hasLook) setTimeout(() => openCustomizer(true), 250); }
+function start(){
+  if (S.started) return; S.started = true; $('intro').classList.add('hidden'); updateCandleHour();
+  if (S.deepIdx != null && S.pets.get('p' + S.deepIdx)) { const idx = S.deepIdx; S.deepIdx = null; store.set('aac-onboarded', '1'); setTimeout(() => goToGlobal(idx, true), 600); return; }
+  if (!store.get('aac-onboarded')) setTimeout(() => runOnboarding(0), 300); else if (!S.hasLook) setTimeout(() => openCustomizer(true), 250);
+}
 $('enterBtn').onclick = start;
 
 // =============== character editor ===============
@@ -1977,7 +2084,7 @@ const COACH = [
   {title: 'Para moverte', text: isTouch ? 'Usa el control redondo o toca el suelo donde quieras ir. Arrastra la pantalla para mirar alrededor.' : 'Haz clic en el suelo donde quieras ir o usa las flechas / WASD. Arrastra para mirar alrededor.', target: '#joy'},
   {title: 'El hall de entrada', text: 'Aquí nos encontramos todos. La vela de la comunidad crece con cada velita, los tablones muestran los últimos recuerdos y los arcos del fondo llevan a las galerías.', target: '#hint'},
   {title: 'Añade a tu mascota', text: 'Este botón cuelga su foto en el primer lugar libre de una galería, con su nombre, fechas y unas palabras.', target: '#addBtn'},
-  {title: 'Encuéntralas a todas', text: '“Todas” es el directorio: busca cualquier mascota por su nombre y te lleva caminando hasta ella.', target: '#dirBtn'},
+  {title: 'Todo en el Menú', text: 'En ☰ Menú encuentras el buscador de mascotas, tus mascotas, la Hora de las velas, servicios para mascotas y apoyo en el duelo.', target: '#menuBtn'},
   {title: 'Saluda a los demás', text: 'Con 😊 envías un saludo que verán los visitantes que estén paseando contigo en ese momento.', target: '#emoBtn'},
   {title: 'Visita y recuerda', text: 'Toca la foto de una mascota para encenderle una velita, dejarle flores o un regalo, soltar un farol o firmar su libro de visitas. 💛', btn: '¡Comenzar!'},
 ];
@@ -2167,12 +2274,18 @@ async function setupSupabase(){
   S.sb = sb;
   const {data: {session}} = await sb.auth.getSession(); S.user = session ? session.user : null;
   sb.auth.onAuthStateChange((_e, sess) => { S.user = sess ? sess.user : null; afterAuth(); });
-  const toPet = r => cleanPet('p' + r.idx, {name: r.name, species: r.species, born: r.born, died: r.died, epitaph: r.epitaph, photo: r.photo_url || '', by: r.by_name, at: Date.parse(r.created_at) || 0, owner: r.owner});
+  const toPet = r => cleanPet('p' + r.idx, {name: r.name, species: r.species, born: r.born, died: r.died, epitaph: r.epitaph, photo: r.photo_url || '', by: r.by_name, at: Date.parse(r.created_at) || 0, owner: r.owner, bdate: r.birth_date, ddate: r.death_date});
+  const toMem = r => cleanMem({pet: r.pet_id, text: r.text, photo: r.photo_url || '', author: r.author, uid: r.user_id, at: Date.parse(r.created_at) || 0}, r.id);
+  const toSvc = r => cleanService({cat: r.category, name: r.name, desc: r.description, city: r.city, url: r.url, phone: r.phone, featured: r.featured, at: Date.parse(r.created_at) || 0}, r.id);
+  async function loadMems(){ const {data} = await sb.from('memories').select('*').order('created_at', {ascending: false}).limit(800); if (data) setMemories(data.map(toMem)); }
+  async function loadSvcs(){ const {data} = await sb.from('services').select('*').limit(300); if (data) setServices(data.map(toSvc)); }
+  async function uploadPhoto(dataUrl){ const path = `${S.user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 6)}.jpg`; const up = await sb.storage.from('photos').upload(path, dataUrlToBlob(dataUrl), {contentType: 'image/jpeg', upsert: false}); if (up.error) throw sbErr(up.error); return sb.storage.from('photos').getPublicUrl(path).data.publicUrl; }
   const toOff = r => cleanOff({pet: r.pet_id, kind: r.kind, text: r.text, color: r.color, author: r.author, at: Date.parse(r.created_at) || 0});
   const toChat = r => cleanChat({room: r.room, text: r.text, author: r.author, uid: r.user_id, at: Date.parse(r.created_at) || 0}, r.id);
   async function loadPets(){ const {data, error} = await sb.from('pets').select('*').order('idx'); if (error) throw error; const m = new Map(); for (const r of data) { const p = toPet(r); if (p) { p.owner = r.owner; m.set(p.id, p); } } S.pets = m; onData(); }
   async function loadOffs(){ const {data, error} = await sb.from('offerings').select('*').order('created_at', {ascending: false}).limit(1000); if (error) throw error; S.offerings = data.map(toOff).filter(Boolean); onData(); }
   async function loadChat(){ const {data} = await sb.from('chat_messages').select('*').eq('hidden', false).order('created_at', {ascending: false}).limit(300); onChatData((data || []).map(toChat).filter(Boolean)); }
+  loadMems().catch(() => {}); loadSvcs().catch(() => {});
   try { await Promise.all([loadPets(), loadOffs(), loadChat()]); } catch (e) { console.error(e); toast(/schema cache|does not exist|relation|PGRST205|42P01/i.test((e && (e.message || e.code)) || '') ? 'Falta crear la base de datos: ejecuta supabase/schema.sql en Supabase.' : 'No se pudo cargar el memorial. Revisa la conexión.'); }
   // Live connections use their own client without the user session, so a sign-in never breaks them.
   const rt = window.supabase.createClient(LARC.supabaseUrl, LARC.supabaseKey, {auth: {persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'larc-live'}, realtime: {params: {eventsPerSecond: 25}}});
@@ -2182,6 +2295,8 @@ async function setupSupabase(){
     .on('postgres_changes', {event: 'INSERT', schema: 'public', table: 'offerings'}, ({new: r}) => { const o = toOff(r); if (o) { S.offerings = [o, ...S.offerings].slice(0, 1500); onData(); } })
     .on('postgres_changes', {event: 'DELETE', schema: 'public', table: 'offerings'}, () => loadOffs().catch(() => {}))
     .on('postgres_changes', {event: '*', schema: 'public', table: 'chat_messages'}, () => loadChat().catch(() => {}))
+    .on('postgres_changes', {event: '*', schema: 'public', table: 'memories'}, () => loadMems().catch(() => {}))
+    .on('postgres_changes', {event: '*', schema: 'public', table: 'services'}, () => loadSvcs().catch(() => {}))
     .subscribe(st => { if (st !== 'SUBSCRIBED') console.warn('larc-db', st); });
   // presence
   const key = myId() + '-' + Math.random().toString(36).slice(2, 6);
@@ -2218,10 +2333,23 @@ async function setupSupabase(){
         if (up.error) throw sbErr(up.error);
         photo_url = sb.storage.from('photos').getPublicUrl(path).data.publicUrl;
       }
-      const {error} = await sb.from('pets').insert({idx, name: v.name, species: v.species, born: v.born, died: v.died, epitaph: v.epitaph, photo_url, by_name: v.by || null});
+      const {error} = await sb.from('pets').insert({idx, name: v.name, species: v.species, born: v.born, died: v.died, epitaph: v.epitaph, photo_url, by_name: v.by || null, birth_date: v.bdate || null, death_date: v.ddate || null});
       if (error) throw sbErr(error);
       await loadPets();
     },
+    async updatePet(idx, f){
+      needUser();
+      const row = {name: f.name, species: f.species, born: f.born, died: f.died, epitaph: f.epitaph, birth_date: f.bdate || null, death_date: f.ddate || null};
+      if (f.photo && f.photo.startsWith('data:')) row.photo_url = await uploadPhoto(f.photo);
+      const {error} = await sb.from('pets').update(row).eq('idx', idx); if (error) throw sbErr(error); await loadPets();
+    },
+    async addMemory(pet, m){ needUser(); const photo_url = m.photo ? await uploadPhoto(m.photo) : null; const {error} = await sb.from('memories').insert({pet_id: pet, text: m.text || null, photo_url, author: m.author || null}); if (error) throw sbErr(error); await loadMems(); },
+    async removeMemory(m){ const {error} = await sb.from('memories').delete().eq('id', m.id); if (error) throw sbErr(error); await loadMems(); },
+    async addService(x){ const {error} = await sb.from('services').insert({category: x.cat, name: x.name, description: x.desc || null, city: x.city || null, url: x.url || null, phone: x.phone || null, featured: !!x.featured}); if (error) throw sbErr(error); await loadSvcs(); },
+    async removeService(x){ const {error} = await sb.from('services').delete().eq('id', x.id); if (error) throw sbErr(error); await loadSvcs(); },
+    async requestService(r){ needUser(); const {error} = await sb.from('service_requests').insert({name: r.name, category: r.cat, city: r.city || null, contact: r.contact, description: r.desc || null}); if (error) throw sbErr(error); },
+    async listRequests(){ const {data, error} = await sb.from('service_requests').select('*').order('created_at', {ascending: false}).limit(200); if (error) throw sbErr(error); return data.map(r => cleanReq({name: r.name, cat: r.category, city: r.city, contact: r.contact, desc: r.description, at: Date.parse(r.created_at) || 0}, r.id)); },
+    async removeRequest(id){ const {error} = await sb.from('service_requests').delete().eq('id', id); if (error) throw sbErr(error); },
     async addOffering(o){
       if (o.kind === 'message') needUser();
       const {error} = await sb.from('offerings').insert({pet_id: o.pet, kind: o.kind, text: o.text || null, color: o.color || null, author: o.author || null});
@@ -2325,6 +2453,387 @@ const _closeModal = closeModal;
 closeModal = function(){ S.loginOpen = false; S.visiting = null; lastSent = ''; _closeModal(); };
 const _writeError = writeError;
 writeError = function(e){ if (e && e.code === 'silent') return; if (e && e.code === 'auth') { openLogin(); return toast('Inicia sesión para hacer esto.'); } return _writeError(e); };
+
+// =============== extras: memories, special dates, sharing, services, support, menu ===============
+const SERVICE_CATS = {cremacion: '🕊️ Cremación y despedida', veterinaria: '🩺 Veterinarias', recuerdos: '💎 Urnas y recuerdos', retratos: '🎨 Retratos e ilustraciones', duelo: '🤍 Apoyo en el duelo', otros: '✨ Otros'};
+S.memories = new Map(); S.services = []; S.requests = []; S.petTab = 'homenaje';
+const isDate = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
+const _cleanPetBase = cleanPet;
+cleanPet = function(id, v){ const p = _cleanPetBase(id, v); if (!p) return p; p.bdate = isDate(v.bdate) ? v.bdate : ''; p.ddate = isDate(v.ddate) ? v.ddate : ''; p.owner = str(v.owner, 64); return p; };
+function cleanMem(v, id){ if (!v || !/^p\d{1,6}$/.test(v.pet)) return null; const text = str(v.text, 600).trim(); const photo = typeof v.photo === 'string' && (v.photo.startsWith('data:image/') || (LARC.supabaseUrl && v.photo.startsWith(LARC.supabaseUrl + '/storage/v1/object/public/'))) ? v.photo : ''; if (!text && !photo) return null; return {id: String(id), pet: v.pet, text, photo, author: str(v.author, 40), uid: str(v.uid, 64), at: +v.at || 0}; }
+function cleanService(v, id){ if (!v || !SERVICE_CATS[v.cat] || !str(v.name, 80).trim()) return null; const url = typeof v.url === 'string' && /^https?:\/\/\S+$/i.test(v.url) ? v.url.slice(0, 300) : ''; return {id: String(id), cat: v.cat, name: str(v.name, 80), desc: str(v.desc, 400), city: str(v.city, 60), url, phone: str(v.phone, 40), featured: !!v.featured, at: +v.at || 0}; }
+function cleanReq(v, id){ if (!v || !str(v.name, 80).trim()) return null; return {id: String(id), cat: SERVICE_CATS[v.cat] ? v.cat : 'otros', name: str(v.name, 80), city: str(v.city, 60), contact: str(v.contact, 120), desc: str(v.desc, 600), at: +v.at || 0}; }
+function setMemories(list){ const m = new Map(); for (const x of list) { if (!x) continue; if (!m.has(x.pet)) m.set(x.pet, []); m.get(x.pet).push(x); } for (const a of m.values()) a.sort((p, q) => q.at - p.at); S.memories = m; if (S.modal && S.modalRefresh) S.modalRefresh(); }
+function setServices(list){ S.services = list.filter(Boolean).sort((a, b) => (b.featured - a.featured) || a.name.localeCompare(b.name, 'es')); if (S.modal && S.modalRefresh) S.modalRefresh(); }
+const canEditPet = pet => !!pet && (S.isAdmin || (S.backend && S.backend.kind === 'local') || (pet.owner && pet.owner === myUid()));
+
+// ---------- special dates ----------
+function specialToday(pet){
+  if (!pet) return null; const t = new Date(), md = String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+  if (pet.bdate && pet.bdate.slice(5) === md) return {kind: 'cumple', years: t.getFullYear() - +pet.bdate.slice(0, 4), emoji: '🎂', text: y => `Hoy ${pet.name} estaría de cumpleaños${y > 0 ? ` · ${y} años` : ''}`};
+  if (pet.ddate && pet.ddate.slice(5) === md) return {kind: 'partida', years: t.getFullYear() - +pet.ddate.slice(0, 4), emoji: '🌈', text: y => y > 0 ? `Hoy se cumple${y > 1 ? 'n' : ''} ${y} año${y > 1 ? 's' : ''} desde que ${pet.name} cruzó el arcoíris` : `Hoy recordamos el día en que ${pet.name} cruzó el arcoíris`};
+  return null;
+}
+const specialsToday = () => [...S.pets.values()].map(p => ({p, s: specialToday(p)})).filter(x => x.s);
+const fmtDay = d => { try { const [y, m, dd] = d.split('-').map(Number); return new Date(y, m - 1, dd).toLocaleDateString('es-CL', {day: 'numeric', month: 'long', year: 'numeric'}); } catch { return d; } };
+
+// ---------- candle hour (every day 21:00–21:30, local time) ----------
+function candleHour(){ const n = new Date(), h = n.getHours(), m = n.getMinutes(); if (h === 21 && m < 30) return {active: true, left: 30 - m}; const target = new Date(n); target.setHours(21, 0, 0, 0); if (target <= n) target.setDate(target.getDate() + 1); const mins = Math.round((target - n) / 60000); return {active: false, mins}; }
+const fmtMins = m => m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`;
+let lastCandleLantern = 0;
+function updateCandleHour(){
+  const ch = candleHour(), b = $('candleBanner'); if (!b) return;
+  b.classList.toggle('hidden', !ch.active || !S.started);
+  if (ch.active) b.textContent = `🕯️ Hora de las velas · enciende una velita junto a todos · quedan ${ch.left} min`;
+}
+setInterval(updateCandleHour, 20000);
+function candleHourTick(){
+  if (!candleHour().active || !S.started || !inHall()) return;
+  const now = performance.now(); if (now - lastCandleLantern < 2600) return; lastCandleLantern = now;
+  const an = Math.random() * Math.PI * 2, r = 3 + Math.random() * 3;
+  S.lanterns.push({x: Math.cos(an) * r, y: .8, z: FZ + Math.sin(an) * r, life: 6, ph: Math.random() * 6});
+}
+
+// ---------- photo viewer ----------
+function openPhoto(src, caption){ openModal(() => [el('div', {class: 'viewer'}, el('img', {src, alt: caption || 'Foto'}), caption ? el('p', {class: 'muted', text: caption}) : null)], 'wide'); }
+
+// ---------- pet page with tabs ----------
+openPet = function(id){
+  let busy = false;
+  const give = async (kind, extra = {}) => {
+    if (busy) return; const pet = S.pets.get(id); if (!pet || !S.backend) return;
+    busy = true; S.lastGiveAt = Date.now();
+    try {
+      await S.backend.addOffering({pet: id, kind, at: Date.now(), author: str(authorName(), 40), ...extra});
+      toast(kind === 'candle' ? `Encendiste una velita para ${pet.name} 🕯️` : kind === 'flower' ? `Dejaste una flor para ${pet.name}` : kind === 'gift' ? `Le dejaste un regalo a ${pet.name} ${extra.text}` : 'Tu mensaje quedó en el libro de ' + pet.name);
+      return true;
+    } catch (e) { writeError(e); } finally { busy = false; }
+  };
+  S.visiting = id; lastSent = '';
+  if (S.lastPetOpened !== id) { S.petTab = 'homenaje'; S.lastPetOpened = id; }
+  openModal(() => {
+    const pet = S.pets.get(id); if (!pet) return [el('p', {}, 'Este memorial ya no existe.')];
+    const st = statsOf(id), idx = parseInt(id.slice(1)), nv = visitorsOf(id), sp = specialToday(pet), mems = S.memories.get(id) || [], mine = canEditPet(pet);
+    const tab = (key, label) => el('button', {class: 'ptab' + (S.petTab === key ? ' sel' : ''), on: {click: () => { S.petTab = key; S.modalRefresh(); $('sheet').scrollTop = 0; }}}, label);
+    const head = el('div', {class: 'pethead'},
+      el('button', {class: 'portrait asbtn', 'aria-label': 'Ver foto', on: {click: () => pet.photo && openPhoto(pet.photo, pet.name)}}, pet.photo ? el('img', {src: pet.photo, alt: 'Foto de ' + pet.name}) : SPECIES[pet.species]),
+      el('div', {style: 'min-width:0'},
+        el('h2', {text: pet.name}),
+        el('div', {class: 'sub', text: [SPECIES[pet.species] + ' ' + pet.species.charAt(0).toUpperCase() + pet.species.slice(1), [pet.born, pet.died].filter(Boolean).join(' – ')].filter(Boolean).join(' · ')}),
+        el('div', {class: 'sub', text: `Piso ${Math.floor(idx / SLOTS) + 1} · lugar ${idx % SLOTS + 1}` + (nv ? ` · 👥 ${nv} aquí ahora` : '')}),
+        el('div', {class: 'pactions'},
+          el('button', {class: 'mini', on: {click: () => openShare(pet)}}, '🔗 Compartir'),
+          S.chat ? el('button', {class: 'mini', on: {click: () => { closeModal(); openChat(id); }}}, '💬 Conversar') : null,
+          mine ? el('button', {class: 'mini gold', on: {click: () => openEditPet(pet)}}, '✏️ Editar') : null)));
+    const banner = sp ? el('div', {class: 'special'}, el('span', {class: 'big', text: sp.emoji}), el('div', {}, el('b', {text: sp.text(sp.years)}), el('small', {}, 'Enciéndele una velita para acompañarle hoy.'))) : null;
+    const tabs = el('div', {class: 'ptabs'}, tab('homenaje', '🕯️ Homenaje'), tab('recuerdos', `📷 Recuerdos${mems.length ? ' · ' + mems.length : ''}`), tab('libro', `💌 Libro${st.messages.length ? ' · ' + st.messages.length : ''}`));
+    let body;
+    if (S.petTab === 'recuerdos') body = memoriesTab(pet, mems, mine);
+    else if (S.petTab === 'libro') body = guestbookTab(pet, st, give);
+    else body = tributeTab(pet, st, give, idx);
+    return [head, banner, tabs, body];
+  });
+};
+function tributeTab(pet, st, give, idx){
+  const flowerBtn = el('button', {class: 'ghost', on: {click: () => give('flower', {color: FLOWERS[flowerSel][0]})}}, FLOWERS[flowerSel][1] + ' Dejar flor');
+  const giftBtn = el('button', {class: 'ghost', on: {click: () => give('gift', {text: GIFTS[giftSel]})}}, GIFTS[giftSel] + ' Dejar regalo');
+  const pick = (label, list, sel, onSel) => { const row = el('div', {class: 'picker'}, el('small', {}, label)); list.forEach((e, k) => row.append(el('button', {class: k === sel ? 'sel' : '', 'aria-label': e, on: {click: () => { onSel(k); row.querySelectorAll('button').forEach((b, j) => b.classList.toggle('sel', j === k)); }}}, e))); return row; };
+  const lanternBtn = el('button', {class: 'ghost', on: {click: () => {
+    const s = SLOT_S(idx % SLOTS), zc = SLOT_Z(idx % SLOTS);
+    if (Math.floor(idx / SLOTS) === S.floor) S.lanterns.push({x: s * (W / 2 - 1.1), y: 1.4, z: zc, life: 6, ph: Math.random() * 6});
+    closeModal(); toast(`Tu farol para ${pet.name} se eleva al cielo 🏮`);
+  }}}, '🏮 Soltar un farol');
+  return el('div', {class: 'ptab-body'},
+    pet.epitaph ? el('div', {class: 'epitaph', text: '“' + pet.epitaph + '”'}) : null,
+    (pet.bdate || pet.ddate) ? el('div', {class: 'dates'}, pet.bdate ? el('span', {}, '🎂 ', fmtDay(pet.bdate)) : null, pet.ddate ? el('span', {}, '🌈 ', fmtDay(pet.ddate)) : null) : null,
+    el('div', {class: 'pstats'},
+      el('span', {}, '🕯️ ', el('b', {text: String(st.lit)}), ' encendidas'),
+      el('span', {}, '🌸 ', el('b', {text: String(st.flowers.length)}), ' flores'),
+      el('span', {}, '🎁 ', el('b', {text: String(st.gifts.length)}), ' regalos')),
+    el('button', {class: 'btn candlebtn', on: {click: () => give('candle')}}, '🕯️ Encender una velita'),
+    el('div', {class: 'actions'}, flowerBtn, giftBtn),
+    pick('Flor', FLOWERS.map(f => f[1]), flowerSel, k => { flowerSel = k; flowerBtn.textContent = FLOWERS[k][1] + ' Dejar flor'; }),
+    pick('Regalo', GIFTS, giftSel, k => { giftSel = k; giftBtn.textContent = GIFTS[k] + ' Dejar regalo'; }),
+    lanternBtn,
+    el('p', {class: 'muted', style: 'margin-top:16px'}, 'Memorial creado' + (pet.by ? ' por ' + pet.by : '') + (pet.at ? ' el ' + fmtDate(pet.at) : '') + '. Las velitas brillan 30 días; los faroles se elevan y no se guardan.'));
+}
+function guestbookTab(pet, st, give){
+  const nameIn = el('input', {maxlength: 40, placeholder: 'Tu nombre (opcional)', value: authorName()});
+  const txt = el('textarea', {maxlength: 280, placeholder: 'Escribe unas palabras para ' + pet.name + '…'});
+  const sendBtn = el('button', {class: 'btn', style: 'width:100%;margin-top:10px', on: {click: async () => {
+    const text = cleanText(txt.value, 280); if (!text) return txt.focus();
+    store.set('aac-name', nameIn.value.trim().slice(0, 40));
+    sendBtn.disabled = true; const ok = await give('message', {text}); sendBtn.disabled = false;
+    if (ok) { txt.value = ''; txt.blur(); nameIn.blur(); S.modalRefresh && S.modalRefresh(); }
+  }}}, 'Firmar el libro de visitas');
+  return el('div', {class: 'ptab-body'}, txt, nameIn, sendBtn,
+    st.messages.length ? st.messages.slice(0, 80).map(m => el('div', {class: 'msg'}, el('p', {text: m.text}), el('small', {text: (m.author ? '— ' + m.author + ' · ' : '') + fmtDate(m.at)})))
+      : el('p', {class: 'muted', style: 'text-align:center;margin:20px 0'}, 'Aún no hay mensajes. Sé el primero en dejar unas palabras.'));
+}
+function memoriesTab(pet, mems, mine){
+  const out = el('div', {class: 'ptab-body'});
+  if (mine) {
+    let photo = '';
+    const prev = el('div', {class: 'memprev'}, '📷');
+    const file = el('input', {type: 'file', accept: 'image/*', style: 'display:none', on: {change: async () => { const f = file.files[0]; if (!f) return; try { photo = await resizePhoto(f, 900); prev.replaceChildren(el('img', {src: photo, alt: 'Vista previa'})); } catch { toast('No se pudo leer esa imagen.'); } }}});
+    const txt = el('textarea', {maxlength: 600, placeholder: 'Cuenta un recuerdo: una travesura, su lugar favorito, lo que más extrañas…'});
+    const save = el('button', {class: 'btn', on: {click: async () => {
+      const text = cleanText(txt.value, 600); if (!text && !photo) return toast('Agrega una foto o escribe un recuerdo.');
+      save.disabled = true; save.textContent = 'Guardando…';
+      try { await S.backend.addMemory(pet.id, {text, photo, author: str(authorName(), 40)}); toast('Recuerdo guardado 💛'); txt.value = ''; photo = ''; prev.replaceChildren('📷'); }
+      catch (e) { writeError(e); } finally { save.disabled = false; save.textContent = 'Guardar recuerdo'; }
+    }}}, 'Guardar recuerdo');
+    out.append(el('div', {class: 'memform'}, el('div', {class: 'memrow'}, el('button', {class: 'memprevbtn', on: {click: () => file.click()}}, prev), txt), file, el('div', {class: 'row2'}, el('button', {class: 'ghost', on: {click: () => file.click()}}, '📷 Elegir foto'), save)));
+  }
+  if (!mems.length) out.append(el('p', {class: 'muted', style: 'text-align:center;margin:22px 8px'}, mine ? 'Aquí puedes guardar fotos e historias de ' + pet.name + '. Solo tú (y los administradores) pueden agregarlas; todos las pueden ver.' : 'Aún no hay recuerdos de ' + pet.name + '.'));
+  else out.append(el('div', {class: 'memgrid'}, mems.map(m => el('div', {class: 'memcard'},
+    m.photo ? el('button', {class: 'memimg', on: {click: () => openPhoto(m.photo, m.text)}}, el('img', {src: m.photo, alt: 'Recuerdo de ' + pet.name, loading: 'lazy'})) : null,
+    m.text ? el('p', {text: m.text}) : null,
+    el('small', {}, fmtDate(m.at), mine ? el('button', {class: 'link', style: 'float:right;padding:0;font-size:12px', on: {click: async () => { try { await S.backend.removeMemory(m); toast('Recuerdo eliminado'); } catch (e) { writeError(e); } }}}, 'Eliminar') : null)))));
+  return out;
+}
+
+// ---------- edit memorial ----------
+function openEditPet(pet){
+  let photo = pet.photo;
+  const f = {
+    name: el('input', {maxlength: 40, value: pet.name}),
+    species: el('select', {}, Object.entries(SPECIES).map(([k, e]) => el('option', {value: k, selected: k === pet.species}, e + ' ' + k.charAt(0).toUpperCase() + k.slice(1)))),
+    born: el('input', {maxlength: 20, value: pet.born, placeholder: 'Ej: 2010'}), died: el('input', {maxlength: 20, value: pet.died, placeholder: 'Ej: 2025'}),
+    bdate: el('input', {type: 'date', value: pet.bdate}), ddate: el('input', {type: 'date', value: pet.ddate}),
+    epitaph: el('textarea', {maxlength: 160}),
+  };
+  f.epitaph.value = pet.epitaph;
+  const prev = portrait(pet);
+  const file = el('input', {type: 'file', accept: 'image/*', style: 'display:none', on: {change: async () => { const fl = file.files[0]; if (!fl) return; try { photo = await resizePhoto(fl); prev.replaceChildren(el('img', {src: photo, alt: 'Vista previa'})); } catch { toast('No se pudo leer esa imagen.'); } }}});
+  const save = el('button', {class: 'btn', style: 'width:100%;margin-top:18px', on: {click: async () => {
+    const name = f.name.value.trim(); if (!name) return toast('El nombre no puede quedar vacío.');
+    const bdate = f.bdate.value, ddate = f.ddate.value;
+    save.disabled = true; save.textContent = 'Guardando…';
+    try {
+      await S.backend.updatePet(parseInt(pet.id.slice(1)), {name, species: f.species.value, born: f.born.value.trim() || (bdate ? bdate.slice(0, 4) : ''), died: f.died.value.trim() || (ddate ? ddate.slice(0, 4) : ''), bdate, ddate, epitaph: cleanText(f.epitaph.value, 160), photo});
+      toast('Memorial actualizado ✨'); openPet(pet.id);
+    } catch (e) { writeError(e); save.disabled = false; save.textContent = 'Guardar cambios'; }
+  }}}, 'Guardar cambios');
+  openModal(() => [
+    el('h2', {class: 'ctitle'}, 'Editar el memorial de ' + pet.name),
+    el('label', {}, 'Foto'), el('div', {class: 'photo-pick'}, prev, el('button', {class: 'ghost', on: {click: () => file.click()}}, 'Cambiar foto'), file),
+    el('label', {}, 'Nombre'), f.name, el('label', {}, 'Especie'), f.species,
+    el('div', {class: 'row2'}, el('div', {}, el('label', {}, 'Llegó (año)'), f.born), el('div', {}, el('label', {}, 'Partió (año)'), f.died)),
+    el('div', {class: 'row2'}, el('div', {}, el('label', {}, '🎂 Fecha de nacimiento'), f.bdate), el('div', {}, el('label', {}, '🌈 Fecha de partida'), f.ddate)),
+    el('p', {class: 'muted', style: 'margin:6px 0 0;font-size:12.5px'}, 'Con las fechas exactas, su lugar brillará especialmente en su cumpleaños y en el aniversario de su partida.'),
+    el('label', {}, 'Unas palabras'), f.epitaph,
+    save,
+    el('button', {class: 'link', style: 'display:block;margin:12px auto 0', on: {click: () => openPet(pet.id)}}, 'Volver sin guardar'),
+  ]);
+}
+
+// ---------- share: link + memorial card ----------
+function shareLink(pet){ return location.href.split('#')[0] + '#m' + parseInt(pet.id.slice(1)); }
+function loadImage(src){ return new Promise(res => { if (!src) return res(null); const im = new Image(); if (/^https?:/.test(src)) im.crossOrigin = 'anonymous'; im.onload = () => res(im); im.onerror = () => res(null); im.src = src; }); }
+async function memorialCard(pet){
+  const [c, g] = canvas(1080, 1350);
+  let gr = g.createLinearGradient(0, 0, 0, 1350); gr.addColorStop(0, '#fff6e6'); gr.addColorStop(.55, '#fbe3d2'); gr.addColorStop(1, '#e7d6ef'); g.fillStyle = gr; g.fillRect(0, 0, 1080, 1350);
+  ['#ff9aa8', '#ffc48a', '#fff08f', '#a8e6a1', '#9fd3ff', '#c3a8ff'].forEach((col, i) => { g.strokeStyle = col; g.globalAlpha = .35; g.lineWidth = 22; g.beginPath(); g.arc(540, 1420, 760 - i * 22, Math.PI, 0); g.stroke(); });
+  g.globalAlpha = 1;
+  // arch frame with photo
+  const ax = 540, top = 150, hw = 300, bot = 860;
+  const arch = () => { g.beginPath(); g.moveTo(ax - hw, bot); g.lineTo(ax - hw, top + hw); g.arc(ax, top + hw, hw, Math.PI, 0); g.lineTo(ax + hw, bot); g.closePath(); };
+  g.save(); g.shadowColor = 'rgba(160,100,40,.35)'; g.shadowBlur = 40; arch(); g.fillStyle = '#fff'; g.fill(); g.restore();
+  g.save(); arch(); g.clip();
+  const im = await loadImage(pet.photo);
+  if (im) { const ar = im.width / im.height, bw = hw * 2, bh = bot - top; let dw = bw, dh = bw / ar; if (dh < bh) { dh = bh; dw = bh * ar; } g.drawImage(im, ax - dw / 2, top + bh / 2 - dh / 2, dw, dh); }
+  else { gr = g.createLinearGradient(0, top, 0, bot); gr.addColorStop(0, '#fdebd3'); gr.addColorStop(1, '#f3dcef'); g.fillStyle = gr; g.fillRect(ax - hw, top, hw * 2, bot - top); g.font = '300px ' + EMOJI_FONT; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(SPECIES[pet.species], ax, (top + bot) / 2 + 20); }
+  g.restore();
+  g.lineWidth = 16; g.strokeStyle = '#e6b45c'; arch(); g.stroke(); g.lineWidth = 4; g.strokeStyle = '#fff3cf'; g.save(); g.translate(ax, (top + bot) / 2); g.scale(.96, .975); g.translate(-ax, -(top + bot) / 2); arch(); g.stroke(); g.restore();
+  // little angel
+  const [ac, ag] = canvas(256, 256); drawPetAngel(ag, pet.species, furOf(pet), 1); g.drawImage(ac, ax + hw - 120, bot - 170, 210, 210);
+  // text
+  g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.fillStyle = '#6b3f1d';
+  let size = 118; g.font = `700 ${size}px "Cormorant Garamond", Georgia, serif`; while (g.measureText(pet.name).width > 900 && size > 60) { size -= 4; g.font = `700 ${size}px "Cormorant Garamond", Georgia, serif`; }
+  g.fillText(pet.name, 540, 1000);
+  const dates = [pet.bdate ? fmtDay(pet.bdate) : pet.born, pet.ddate ? fmtDay(pet.ddate) : pet.died].filter(Boolean).join('  —  ');
+  if (dates) { g.font = '600 38px Nunito, sans-serif'; g.fillStyle = '#9a6a4a'; g.fillText(dates, 540, 1062); }
+  if (pet.epitaph) { g.font = 'italic 500 46px "Cormorant Garamond", Georgia, serif'; g.fillStyle = '#6b4a7a'; wrapText(g, '“' + pet.epitaph + '”', 860, 3).forEach((l, i) => g.fillText(l, 540, 1140 + i * 54)); }
+  g.font = '700 34px "Cormorant Garamond", Georgia, serif'; g.fillStyle = '#b07a3a'; g.fillText('L A R C   E N   P E T', 540, 1290);
+  g.font = '600 26px Nunito, sans-serif'; g.fillStyle = '#9a7a6a'; g.fillText('Enciéndele una velita · ' + location.host + location.pathname.replace(/\/$/, ''), 540, 1326);
+  return c;
+}
+function openShare(pet){
+  const link = shareLink(pet);
+  const linkIn = el('input', {value: link, readonly: true, on: {focus: e => e.target.select()}});
+  const cardBox = el('div', {class: 'cardbox'}, el('p', {class: 'muted', style: 'margin:0'}, 'Creando la tarjeta…'));
+  openModal(() => [
+    el('h2', {class: 'ctitle'}, 'Compartir a ' + pet.name),
+    el('p', {class: 'muted', style: 'margin:4px 0 10px'}, 'Invita a familia y amigos a visitarle y encenderle una velita.'),
+    el('label', {}, 'Enlace directo a su memorial'),
+    el('div', {class: 'authform'}, linkIn, el('button', {class: 'btn', on: {click: async () => { try { await navigator.clipboard.writeText(link); toast('Enlace copiado 📋'); } catch { linkIn.select(); toast('Mantén presionado el enlace para copiarlo.'); } }}}, 'Copiar')),
+    S.backend && S.backend.kind !== 'supabase' ? el('p', {class: 'muted', style: 'font-size:12.5px;margin:6px 0 0'}, 'En esta versión el enlace abre el memorial solo para quienes ya tienen acceso a esta página.') : null,
+    el('label', {}, 'Tarjeta para redes sociales'), cardBox,
+  ], 'wide');
+  memorialCard(pet).then(c => {
+    const url = c.toDataURL('image/jpeg', .9);
+    const name = 'larc-en-pet-' + pet.name.toLowerCase().replace(/[^a-z0-9áéíóúñ]+/gi, '-') + '.jpg';
+    const btns = el('div', {class: 'row2', style: 'margin-top:10px'});
+    c.toBlob(blob => {
+      const fileObj = blob && typeof File === 'function' ? new File([blob], name, {type: 'image/jpeg'}) : null;
+      if (fileObj && navigator.canShare && navigator.canShare({files: [fileObj]})) btns.append(el('button', {class: 'btn', on: {click: async () => { try { await navigator.share({files: [fileObj], title: pet.name, text: `Recordando a ${pet.name} 💛 ${link}`}); } catch {} }}}, '📤 Compartir imagen'));
+      btns.append(el('a', {class: 'ghost dl', href: url, download: name}, '⬇️ Descargar'));
+    }, 'image/jpeg', .9);
+    cardBox.replaceChildren(el('img', {src: url, alt: 'Tarjeta de ' + pet.name, class: 'cardimg'}), btns, el('p', {class: 'muted', style: 'font-size:12.5px;margin:8px 0 0'}, 'Si no se descarga, mantén presionada la imagen (o clic derecho) y elige "Guardar imagen".'));
+  }).catch(() => cardBox.replaceChildren(el('p', {class: 'muted'}, 'No se pudo crear la tarjeta.')));
+}
+
+// ---------- my pets ----------
+function openMyPets(){
+  openModal(() => {
+    const mine = [...S.pets.values()].filter(p => canEditPet(p) && (S.backend.kind === 'local' || p.owner === myUid()));
+    return [el('h2', {class: 'ctitle'}, 'Mis mascotas'),
+      S.sb && !S.user ? el('div', {class: 'empty'}, el('p', {}, 'Inicia sesión para ver y editar tus mascotas.'), el('button', {class: 'btn', on: {click: openLogin}}, 'Iniciar sesión')) :
+      mine.length ? mine.map(p => { const idx = parseInt(p.id.slice(1)); return el('div', {class: 'dir-item'}, portrait(p), el('div', {style: 'flex:1;min-width:0'}, el('b', {text: p.name}), el('div', {class: 'muted', text: `Piso ${Math.floor(idx / SLOTS) + 1} · 🕯️ ${statsOf(p.id).lit} · 📷 ${(S.memories.get(p.id) || []).length}`})),
+        el('div', {class: 'col-btns'}, el('button', {class: 'mini', on: {click: () => { closeModal(); goToGlobal(idx, true); }}}, 'Visitar'), el('button', {class: 'mini gold', on: {click: () => openEditPet(p)}}, 'Editar'))); })
+      : el('div', {class: 'empty'}, el('p', {}, 'Aún no has añadido a ninguna mascota.'), el('button', {class: 'btn', on: {click: () => { closeModal(); addMine(); }}}, '＋ Añadir a mi mascota'))];
+  });
+}
+
+// ---------- grief support ----------
+function openSupport(){
+  openModal(() => [
+    el('h2', {class: 'ctitle'}, 'Apoyo en el duelo 🤍'),
+    el('div', {class: 'epitaph', style: 'font-size:19px'}, 'Perder a una mascota es perder a un integrante de la familia. Lo que sientes es válido, y no hay una forma correcta ni un tiempo exacto para vivirlo.'),
+    el('h3', {}, 'Pequeños gestos que ayudan'),
+    el('ul', {class: 'tips'},
+      el('li', {}, 'Permítete sentir: llorar, extrañar y también reír al recordar.'),
+      el('li', {}, 'Habla de tu mascota con personas que la conocieron o que entienden lo que significa.'),
+      el('li', {}, 'Crea un ritual: encender una velita, escribirle una carta o guardar sus fotos favoritas en “Recuerdos”.'),
+      el('li', {}, 'Cuida tus rutinas básicas: dormir, comer y salir a caminar, aunque cueste.'),
+      el('li', {}, 'Si en casa hay niños u otras mascotas, ellos también extrañan. Acompáñense.'),
+      el('li', {}, 'Date tiempo antes de decidir sobre una nueva mascota.')),
+    el('h3', {}, 'Si necesitas hablar con alguien (Chile)'),
+    el('div', {class: 'helpcard'}, el('b', {}, 'Salud Responde · 600 360 7777'), el('p', {}, 'Orientación y contención emocional, las 24 horas.'), el('a', {class: 'ghost dl', href: 'tel:6003607777'}, '📞 Llamar al 600 360 7777')),
+    el('div', {class: 'helpcard'}, el('b', {}, 'Línea de Prevención del Suicidio · *4141'), el('p', {}, 'Si sientes que no puedes más, llama: es gratuita, desde celulares, las 24 horas. No estás solo, no estás sola.'), el('a', {class: 'ghost dl', href: 'tel:*4141'}, '📞 Llamar al *4141')),
+    el('p', {class: 'muted', style: 'font-size:13px'}, 'En una emergencia llama al 131 (SAMU). Si estás fuera de Chile, busca la línea de apoyo emocional de tu país.'),
+    el('h3', {}, 'Acompañarnos aquí'),
+    el('p', {}, 'Todos los días a las 21:00 es la “Hora de las velas”: encendemos velitas juntos en el hall. También puedes conversar en 💬 con otras personas que están recordando.'),
+  ]);
+}
+
+// ---------- candle hour info ----------
+function openCandleHour(){
+  const ch = candleHour();
+  openModal(() => [
+    el('h2', {class: 'ctitle'}, '🕯️ Hora de las velas'),
+    el('div', {class: 'special'}, el('span', {class: 'big', text: ch.active ? '🕯️' : '⏳'}), el('div', {}, el('b', {text: ch.active ? '¡Es ahora! Quedan ' + ch.left + ' min' : 'Hoy a las 21:00 · en ' + fmtMins(ch.mins)}), el('small', {}, 'Todos los días de 21:00 a 21:30 (hora de tu dispositivo).'))),
+    el('p', {}, 'Es un momento para recordar juntos: entra al hall, enciende una velita a tu mascota y verás faroles elevándose junto a la fuente. Si hay más personas conectadas, las verás acompañándote.'),
+    ch.active ? el('button', {class: 'btn', style: 'width:100%', on: {click: () => { closeModal(); if (!inHall()) changeFloor(-1); }}}, 'Ir al hall') : null,
+  ]);
+}
+
+// ---------- services directory ----------
+S.svcCat = '';
+function openServices(){
+  openModal(() => {
+    const list = S.services.filter(s => !S.svcCat || s.cat === S.svcCat);
+    const chips = el('div', {class: 'chips', style: 'margin:8px 0 12px'}, el('button', {class: 'cchip' + (!S.svcCat ? ' sel' : ''), on: {click: () => { S.svcCat = ''; S.modalRefresh(); }}}, 'Todos'), Object.entries(SERVICE_CATS).map(([k, v]) => el('button', {class: 'cchip' + (S.svcCat === k ? ' sel' : ''), on: {click: () => { S.svcCat = k; S.modalRefresh(); }}}, v)));
+    return [
+      el('h2', {class: 'ctitle'}, 'Servicios para mascotas 🧡'),
+      el('p', {class: 'muted', style: 'margin:4px 0 0'}, 'Lugares y personas que acompañan en la despedida y el recuerdo.'),
+      chips,
+      list.length ? list.map(s => el('div', {class: 'svc' + (s.featured ? ' feat' : '')},
+        el('div', {class: 'svchead'}, el('b', {text: s.name}), s.featured ? el('span', {class: 'badge'}, '⭐ Destacado') : null),
+        el('small', {class: 'muted', text: SERVICE_CATS[s.cat] + (s.city ? ' · ' + s.city : '')}),
+        s.desc ? el('p', {text: s.desc}) : null,
+        el('div', {class: 'svcbtns'}, s.phone ? el('a', {class: 'mini', href: 'tel:' + s.phone.replace(/[^\d+*]/g, '')}, '📞 ' + s.phone) : null, s.url ? el('a', {class: 'mini', href: s.url, target: '_blank', rel: 'noopener'}, '🌐 Sitio web') : null,
+          S.isAdmin ? el('button', {class: 'mini', on: {click: async () => { try { await S.backend.removeService(s); toast('Servicio quitado'); } catch (e) { writeError(e); } }}}, '🗑 Quitar') : null)))
+        : el('div', {class: 'empty'}, el('p', {}, S.services.length ? 'No hay servicios en esta categoría todavía.' : 'Pronto encontrarás aquí servicios de confianza: cremación, veterinarias, urnas, retratos y apoyo en el duelo.')),
+      el('div', {class: 'svcfoot'}, el('p', {}, '¿Ofreces un servicio para mascotas?'), el('button', {class: 'btn', on: {click: openServiceRequest}}, 'Postula tu servicio')),
+      S.isAdmin ? el('div', {class: 'adminbox'}, el('b', {}, '🛡️ Administración'), el('div', {class: 'row2', style: 'margin-top:8px'}, el('button', {class: 'ghost', on: {click: () => openServiceForm()}}, '＋ Agregar servicio'), el('button', {class: 'ghost', on: {click: openRequests}}, '📥 Postulaciones'))) : null,
+    ];
+  });
+}
+function serviceFields(d = {}){
+  const f = {
+    name: el('input', {maxlength: 80, placeholder: 'Nombre del servicio o negocio', value: d.name || ''}),
+    cat: el('select', {}, Object.entries(SERVICE_CATS).map(([k, v]) => el('option', {value: k, selected: k === d.cat}, v))),
+    city: el('input', {maxlength: 60, placeholder: 'Ciudad o comuna', value: d.city || ''}),
+    desc: el('textarea', {maxlength: 400, placeholder: 'Qué ofrece, horarios, cobertura…'}),
+  };
+  f.desc.value = d.desc || '';
+  return f;
+}
+function openServiceRequest(){
+  if (S.sb && !S.user) { toast('Inicia sesión para postular tu servicio.'); return openLogin(); }
+  const f = serviceFields(), contact = el('input', {maxlength: 120, placeholder: 'Correo o teléfono de contacto'});
+  const send = el('button', {class: 'btn', style: 'width:100%;margin-top:16px', on: {click: async () => {
+    if (!f.name.value.trim() || !contact.value.trim()) return toast('Completa el nombre y un contacto.');
+    send.disabled = true;
+    try { await S.backend.requestService({name: f.name.value.trim(), cat: f.cat.value, city: f.city.value.trim(), contact: contact.value.trim(), desc: f.desc.value.trim()}); toast('¡Gracias! Revisaremos tu postulación 💛'); openServices(); }
+    catch (e) { writeError(e); send.disabled = false; }
+  }}}, 'Enviar postulación');
+  openModal(() => [el('h2', {class: 'ctitle'}, 'Postula tu servicio'), el('p', {class: 'muted', style: 'margin:4px 0 6px'}, 'Revisamos cada postulación antes de publicarla para que este sea un espacio de confianza.'),
+    el('label', {}, 'Nombre'), f.name, el('label', {}, 'Categoría'), f.cat, el('label', {}, 'Ciudad'), f.city, el('label', {}, 'Contacto'), contact, el('label', {}, 'Descripción'), f.desc, send,
+    el('button', {class: 'link', style: 'display:block;margin:12px auto 0', on: {click: openServices}}, 'Volver')]);
+}
+function openServiceForm(from){
+  const f = serviceFields(from || {}), phone = el('input', {maxlength: 40, placeholder: 'Teléfono (opcional)', value: (from && from.phone) || ''}), url = el('input', {maxlength: 300, placeholder: 'https://… (opcional)', value: (from && from.url) || ''});
+  const feat = el('input', {type: 'checkbox', style: 'width:auto'});
+  const save = el('button', {class: 'btn', style: 'width:100%;margin-top:16px', on: {click: async () => {
+    if (!f.name.value.trim()) return toast('Falta el nombre.');
+    if (url.value.trim() && !/^https?:\/\//i.test(url.value.trim())) return toast('El sitio web debe empezar con https://');
+    save.disabled = true;
+    try { await S.backend.addService({name: f.name.value.trim(), cat: f.cat.value, city: f.city.value.trim(), desc: f.desc.value.trim(), phone: phone.value.trim(), url: url.value.trim(), featured: feat.checked}); if (from && from.reqId) await S.backend.removeRequest(from.reqId); toast('Servicio publicado ✅'); openServices(); }
+    catch (e) { writeError(e); save.disabled = false; }
+  }}}, 'Publicar servicio');
+  openModal(() => [el('h2', {class: 'ctitle'}, 'Agregar servicio'), el('label', {}, 'Nombre'), f.name, el('label', {}, 'Categoría'), f.cat, el('label', {}, 'Ciudad'), f.city, el('label', {}, 'Descripción'), f.desc, el('label', {}, 'Teléfono'), phone, el('label', {}, 'Sitio web'), url,
+    el('label', {class: 'saytog', style: 'font-size:14px;margin-top:12px'}, feat, ' Destacado (aparece primero)'), save, el('button', {class: 'link', style: 'display:block;margin:12px auto 0', on: {click: openServices}}, 'Volver')]);
+}
+async function openRequests(){
+  try { S.requests = (await S.backend.listRequests()).filter(Boolean); } catch (e) { writeError(e); S.requests = []; }
+  openModal(() => [el('h2', {class: 'ctitle'}, 'Postulaciones'),
+    S.requests.length ? S.requests.map(r => el('div', {class: 'svc'}, el('b', {text: r.name}), el('small', {class: 'muted', text: SERVICE_CATS[r.cat] + (r.city ? ' · ' + r.city : '') + ' · ' + fmtDate(r.at)}), el('p', {text: r.desc || '—'}), el('p', {class: 'muted', text: 'Contacto: ' + r.contact}),
+      el('div', {class: 'svcbtns'}, el('button', {class: 'mini gold', on: {click: () => openServiceForm({...r, reqId: r.id})}}, '✅ Revisar y publicar'), el('button', {class: 'mini', on: {click: async () => { try { await S.backend.removeRequest(r.id); toast('Postulación descartada'); openRequests(); } catch (e) { writeError(e); } }}}, 'Descartar'))))
+      : el('div', {class: 'empty'}, el('p', {}, 'No hay postulaciones pendientes.')),
+    el('button', {class: 'link', style: 'display:block;margin:12px auto 0', on: {click: openServices}}, 'Volver a servicios')]);
+}
+
+// ---------- main menu ----------
+function openMenu(){
+  const ch = candleHour(), sps = specialsToday();
+  const tile = (icon, title, sub, fn, cls = '') => el('button', {class: 'tile ' + cls, on: {click: fn}}, el('span', {class: 'ticon', text: icon}), el('span', {class: 'ttext'}, el('b', {text: title}), sub ? el('small', {text: sub}) : null));
+  openModal(() => [
+    el('h2', {class: 'ctitle'}, 'Menú'),
+    sps.length ? el('div', {class: 'special', style: 'margin-top:10px'}, el('span', {class: 'big', text: '💛'}), el('div', {}, el('b', {}, 'Hoy recordamos a ' + sps.map(x => x.p.name).join(', ')), el('small', {}, sps.map(x => x.s.emoji + ' ' + x.s.text(x.s.years)).join(' · ')), el('div', {class: 'svcbtns', style: 'margin-top:6px'}, sps.slice(0, 3).map(x => el('button', {class: 'mini', on: {click: () => { closeModal(); goToGlobal(parseInt(x.p.id.slice(1)), true); }}}, 'Visitar a ' + x.p.name))))) : null,
+    el('div', {class: 'tiles'},
+      tile('🔎', 'Buscar mascota', 'Encuentra a cualquier mascota', () => openDirectory()),
+      tile('🐾', 'Mis mascotas', 'Edita y suma recuerdos', openMyPets),
+      tile('＋', 'Añadir mascota', 'Cuelga su foto en la pared', () => { closeModal(); addMine(); }, 'gold'),
+      tile('🕯️', 'Hora de las velas', ch.active ? '¡Ahora! · quedan ' + ch.left + ' min' : 'Hoy 21:00 · en ' + fmtMins(ch.mins), openCandleHour, ch.active ? 'glow' : ''),
+      tile('🧡', 'Servicios', 'Cremación, urnas, retratos y más', openServices),
+      tile('🤍', 'Apoyo en el duelo', 'Ideas y líneas de ayuda', openSupport),
+      tile('🏛', 'Ir al hall', 'Fuente, tablones y arcos', () => { closeModal(); if (!inHall()) changeFloor(-1); }),
+      tile('👤', 'Mi personaje', 'Ropa, peinado y nombre', () => { closeModal(); openCustomizer(false); }),
+      S.sb ? tile(S.user ? '🔐' : '🔑', S.user ? 'Mi cuenta' : 'Iniciar sesión', S.user ? (S.user.email || '') : 'Correo y contraseña', () => S.user ? openAccount() : openLogin()) : null,
+      tile('❓', 'Ayuda', 'Cómo moverse y tutorial', () => openHelp())),
+  ]);
+}
+
+// ---------- deep links (#m12 opens that memorial) ----------
+S.deepIdx = null;
+{ const m = (location.hash || '').match(/^#m(\d{1,6})$/); if (m) S.deepIdx = parseInt(m[1]); }
+function updateDeepIntro(){
+  const box = $('deepIntro'); if (!box) return;
+  if (S.deepIdx == null || S.started) { box.classList.add('hidden'); return; }
+  const pet = S.pets.get('p' + S.deepIdx);
+  box.classList.toggle('hidden', !pet);
+  if (pet) box.replaceChildren(portrait(pet), el('div', {}, el('small', {}, 'Te invitaron a visitar a'), el('b', {text: pet.name}), el('button', {class: 'btn', style: 'margin-top:8px;padding:9px 16px;font-size:15px', on: {click: () => start()}}, '🕯️ Visitar a ' + pet.name)));
+}
+let lastSpecialToast = '';
+function hallSpecialToast(){
+  if (!S.started || !inHall()) return;
+  const sps = specialsToday(); const k = sps.map(x => x.p.id).join();
+  if (!k || k === lastSpecialToast) return; lastSpecialToast = k;
+  setTimeout(() => toast('💛 Hoy recordamos a ' + sps.map(x => x.s.emoji + ' ' + x.p.name).join(', ')), 1200);
+}
 
 // =============== boot ===============
 if (gl) {

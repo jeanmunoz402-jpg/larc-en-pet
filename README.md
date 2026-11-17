@@ -53,6 +53,8 @@ Con Supabase, todos los visitantes del sitio público ven lo mismo: mascotas, ve
    - El tiempo real.
    - El bucket de fotos.
    - El anti-spam y el ocultamiento automático de mensajes reportados.
+
+   Después, en otra consulta, pega y ejecuta [`supabase/02_novedades.sql`](supabase/02_novedades.sql). Agrega fechas especiales, álbum de recuerdos, directorio de servicios y solicitudes.
 2. **Claves:** en **Project Settings → API**, copia la *Project URL* y la *anon public key*, y pégalas al inicio de `index.html`:
    ```js
    window.LARC_CONFIG = window.LARC_CONFIG || {supabaseUrl: 'https://xxxx.supabase.co', supabaseKey: 'eyJ...'};
