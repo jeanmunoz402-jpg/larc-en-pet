@@ -170,6 +170,17 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
 .saytog input{width:auto;margin:0}
 .pstats .live{color:#3d8a5a;font-weight:700}
 @media (max-width:600px){#chat{left:0;right:0;width:auto;bottom:0;height:58vh;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom)}body.chatting #controls{display:none}}
+.authbox{background:#fffaf2d9;border:1.5px solid #fff;border-radius:20px;padding:16px 16px 12px;margin:16px auto 14px;max-width:420px;text-align:left;box-shadow:0 8px 24px #7a4a2a1a}
+.authbox.center{text-align:center}
+.authbox .muted{margin:4px 0 12px}
+.authtitle{font-family:var(--serif);font-size:23px;font-weight:700;color:#7a4a22;margin:0}
+.authok{margin:0 0 4px;font-size:15px;color:#3d5a3a}
+.authform{display:flex;gap:8px;flex-wrap:wrap}
+.authform input{flex:1 1 180px;min-width:0}
+.authform .btn{flex:0 0 auto;padding:11px 16px;font-size:15px}
+.authlinks{display:flex;justify-content:space-between;margin-top:8px}
+.link{background:none;border:0;color:#8a5a2b;text-decoration:underline;font-weight:700;padding:6px 4px;font-size:14px}
+#guestLink{display:block;margin:12px auto 0}
 #toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;
   background:#fffaf2;border:2px solid var(--gold2);color:var(--ink);font-weight:700;padding:11px 18px;border-radius:16px;font-size:14px;z-index:40;transition:.3s;pointer-events:none;max-width:90vw;text-align:center;box-shadow:0 8px 26px #3d2c2a33}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -226,11 +237,12 @@ body.customizing #hint,body.customizing #controls,body.customizing #hud,body.cus
       <div class="stat"><b id="stMsgs">0</b><span>mensajes de cariño</span></div>
     </div>
     <div class="quote">“Nunca se van del todo: nos esperan al otro lado del arcoíris.”</div>
-    <div class="introbtns">
+    <div id="introAuth" class="hidden"></div>
+    <div class="introbtns" id="introBtns">
       <button class="btn" id="enterBtn">Entrar al salón</button>
       <button class="ghost" id="introAdd">＋ Añadir mi mascota</button>
     </div>
-    <button class="ghost hidden" id="introLogin" style="margin-top:10px;width:min(100%,360px)">🔑 Iniciar sesión o crear cuenta</button>
+    <button class="link hidden" id="guestLink">Solo quiero mirar y encender velitas →</button>
     <div class="howto"><span>👆 Toca el suelo para caminar</span><span>✋ Arrastra para mirar</span><span>🖼️ Toca una foto para visitarla</span></div>
     <div class="mode" id="modeNote">Conectando…</div>
   </div>
@@ -1850,7 +1862,7 @@ $('chatBtn').onclick = () => S.started && (S.chatOpen ? closeChat() : openChat()
 $('chatClose').onclick = () => closeChat();
 $('chatForm').addEventListener('submit', e => { e.preventDefault(); sendChat(); });
 $('loginBtn').onclick = () => S.user ? openAccount() : openLogin();
-$('introLogin').onclick = () => openLogin();
+$('guestLink').onclick = () => start();
 EMOTES.forEach(e => $('emotes').append(el('button', {on: {click: () => emote(e)}}, e)));
 $('helpBtn').onclick = () => !S.modal && openHelp();
 $('addBtn').onclick = addMine; $('introAdd').onclick = addMine;
@@ -2120,7 +2132,6 @@ async function setupSupabase(){
   const sb = window.supabase.createClient(LARC.supabaseUrl, LARC.supabaseKey, {auth: {persistSession: true, detectSessionInUrl: true}});
   S.sb = sb;
   const {data: {session}} = await sb.auth.getSession(); S.user = session ? session.user : null;
-  fetch(LARC.supabaseUrl + '/auth/v1/settings', {headers: {apikey: LARC.supabaseKey}}).then(r => r.json()).then(j => { S.googleOn = !!(j.external && j.external.google); }).catch(() => {});
   sb.auth.onAuthStateChange((_e, sess) => { S.user = sess ? sess.user : null; afterAuth(); });
   const toPet = r => cleanPet('p' + r.idx, {name: r.name, species: r.species, born: r.born, died: r.died, epitaph: r.epitaph, photo: r.photo_url || '', by: r.by_name, at: Date.parse(r.created_at) || 0, owner: r.owner});
   const toOff = r => cleanOff({pet: r.pet_id, kind: r.kind, text: r.text, color: r.color, author: r.author, at: Date.parse(r.created_at) || 0});
@@ -2180,7 +2191,7 @@ async function afterAuth(){
   lb.classList.toggle('hidden', !S.sb);
   lb.textContent = S.user ? '👤 ' + (str(authorName(), 14) || 'Mi cuenta') : '🔑 Iniciar sesión';
   lb.classList.toggle('gold', !S.user);
-  $('introLogin').classList.toggle('hidden', !S.sb || !!S.user);
+  renderIntroAuth();
   S.isAdmin = false;
   if (S.sb && S.user) {
     try { const {data} = await S.sb.rpc('is_admin'); S.isAdmin = !!data; } catch {}
@@ -2197,27 +2208,51 @@ function openAccount(){
     el('button', {class: 'ghost', style: 'width:100%', on: {click: async () => { await S.sb.auth.signOut(); closeModal(); toast('Cerraste sesión'); }}}, 'Cerrar sesión'),
   ]);
 }
+S.authStep = 'email'; S.authEmail = store.get('larc-email') || '';
+async function sendLink(v, btn){
+  if (!/^\S+@\S+\.\S+$/.test(v)) return toast('Escribe un correo válido.');
+  if (btn) btn.disabled = true;
+  const {error} = await S.sb.auth.signInWithOtp({email: v, options: {emailRedirectTo: location.origin + location.pathname, shouldCreateUser: true}});
+  if (btn) btn.disabled = false;
+  if (error) { toast(/rate|seconds|security/i.test(error.message || '') ? 'Espera un minuto antes de pedir otro correo.' : 'No se pudo enviar el correo. Intenta de nuevo.'); return; }
+  S.authEmail = v; store.set('larc-email', v); S.authStep = 'sent'; renderAuth(); toast('📬 Correo enviado. Revisa también la carpeta de spam.');
+}
+function authForm(){
+  const wrap = el('div', {class: 'authbox'});
+  if (S.authStep === 'sent') {
+    const code = el('input', {inputmode: 'numeric', maxlength: 10, placeholder: 'Código del correo', autocomplete: 'one-time-code'});
+    const ok = el('button', {class: 'btn', type: 'submit'}, 'Entrar');
+    wrap.append(
+      el('p', {class: 'authtitle'}, 'Revisa tu correo 📬'),
+      el('p', {class: 'muted'}, 'Enviamos un correo a ', el('b', {text: S.authEmail}), '. Toca el enlace del correo abriéndolo en este mismo navegador, o escribe aquí el código si el correo trae uno.'),
+      el('form', {class: 'authform', on: {submit: async e => { e.preventDefault(); const t = code.value.replace(/\s/g, ''); if (t.length < 6) return toast('Escribe el código que llegó al correo.'); ok.disabled = true; const {error} = await S.sb.auth.verifyOtp({email: S.authEmail, token: t, type: 'email'}); ok.disabled = false; if (error) toast('Código incorrecto o vencido. Pide otro correo.'); }}}, code, ok),
+      el('div', {class: 'authlinks'}, el('button', {class: 'link', on: {click: () => sendLink(S.authEmail)}}, 'Reenviar correo'), el('button', {class: 'link', on: {click: () => { S.authStep = 'email'; renderAuth(); }}}, 'Usar otro correo')));
+  } else {
+    const email = el('input', {type: 'email', placeholder: 'tu@email.com', autocomplete: 'email', value: S.authEmail});
+    const go = el('button', {class: 'btn', type: 'submit'}, '📬 Enviarme el enlace');
+    wrap.append(
+      el('p', {class: 'authtitle'}, 'Entra con tu correo'),
+      el('p', {class: 'muted'}, 'Te enviamos un enlace para entrar al salón. Si es tu primera vez, tu cuenta se crea sola. No necesitas contraseña.'),
+      el('form', {class: 'authform', on: {submit: e => { e.preventDefault(); sendLink(email.value.trim(), go); }}}, email, go));
+  }
+  return wrap;
+}
+function renderAuth(){ renderIntroAuth(); if (S.loginOpen && S.modalRefresh) S.modalRefresh(); }
+function renderIntroAuth(){
+  const box = $('introAuth'), btns = $('introBtns'), guest = $('guestLink');
+  if (!(LARC.supabaseUrl && LARC.supabaseKey)) { box.classList.add('hidden'); btns.classList.remove('hidden'); guest.classList.add('hidden'); return; }
+  box.classList.remove('hidden');
+  if (!S.sb) { box.replaceChildren(el('div', {class: 'authbox'}, el('p', {class: 'muted', style: 'text-align:center;margin:0'}, 'Conectando…'))); btns.classList.add('hidden'); guest.classList.add('hidden'); return; }
+  if (S.user) {
+    box.replaceChildren(el('div', {class: 'authbox center'}, el('p', {class: 'authok'}, '✅ Hola, ', el('b', {text: S.user.email || ''})), el('button', {class: 'link', on: {click: async () => { await S.sb.auth.signOut(); S.authStep = 'email'; toast('Cerraste sesión'); }}}, 'No soy yo · cerrar sesión')));
+    btns.classList.remove('hidden'); guest.classList.add('hidden'); return;
+  }
+  box.replaceChildren(authForm()); btns.classList.add('hidden'); guest.classList.remove('hidden');
+}
 function openLogin(){
   if (!S.sb) return;
   S.loginOpen = true;
-  const email = el('input', {type: 'email', placeholder: 'tu@email.com', autocomplete: 'email'});
-  const redirect = location.origin + location.pathname;
-  openModal(() => [
-    el('h2', {class: 'ctitle'}, 'Iniciar sesión o crear cuenta'),
-    el('p', {class: 'muted', style: 'margin:4px 0 6px'}, 'Escribe tu correo y te enviamos un enlace para entrar. Si es tu primera vez, la cuenta se crea sola. No necesitas contraseña.'),
-    el('p', {class: 'muted', style: 'margin:0 0 14px;font-size:12.5px'}, 'Con cuenta puedes añadir a tu mascota, conversar y firmar libros de visitas. Encender velitas y dejar flores es libre.'),
-    el('label', {}, 'Tu correo'), email,
-    el('button', {class: 'btn', style: 'width:100%;margin-top:10px', on: {click: async e => {
-      const v = email.value.trim(); if (!/^\S+@\S+\.\S+$/.test(v)) return toast('Escribe un correo válido.');
-      e.target.disabled = true;
-      const {error} = await S.sb.auth.signInWithOtp({email: v, options: {emailRedirectTo: redirect}});
-      e.target.disabled = false;
-      toast(error ? 'No se pudo enviar el enlace. Intenta de nuevo.' : '📬 Te enviamos un enlace. Ábrelo desde este mismo dispositivo.');
-    }}}, '📬 Enviarme el enlace'),
-    S.googleOn ? el('div', {class: 'muted', style: 'text-align:center;margin:14px 0'}, 'o') : null,
-    S.googleOn ? el('button', {class: 'ghost', style: 'width:100%;font-size:16px', on: {click: () => S.sb.auth.signInWithOAuth({provider: 'google', options: {redirectTo: redirect}})}}, 'Continuar con Google') : null,
-    el('p', {class: 'muted', style: 'margin:14px 0 0;font-size:12.5px'}, 'Revisa también la carpeta de spam. Abre el enlace en este mismo navegador.'),
-  ]);
+  openModal(() => [el('h2', {class: 'ctitle'}, 'Iniciar sesión'), authForm()]);
 }
 const _closeModal = closeModal;
 closeModal = function(){ S.loginOpen = false; S.visiting = null; lastSent = ''; _closeModal(); };
@@ -2232,6 +2267,7 @@ if (gl) {
     requestAnimationFrame(loop);
   } catch (err) { console.error(err); $('modeNote').textContent = 'No se pudo iniciar el 3D en este dispositivo.'; }
 }
+renderIntroAuth();
 initBackend();
 initRoom();
 })();

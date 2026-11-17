@@ -58,9 +58,8 @@ Con Supabase, todos los visitantes del sitio público ven lo mismo: mascotas, ve
    window.LARC_CONFIG = window.LARC_CONFIG || {supabaseUrl: 'https://xxxx.supabase.co', supabaseKey: 'eyJ...'};
    ```
    La *anon key* es pública por diseño. **Nunca** pongas la `service_role` key.
-3. **Inicio de sesión:** en **Authentication → URL Configuration**, pon como *Site URL* `https://jeanmunoz402-jpg.github.io/larc-en-pet/` y agrégala también en *Redirect URLs*.
-   - El correo con enlace mágico funciona sin configurar nada más.
-   - Para **Google**, activa el proveedor en **Authentication → Providers → Google**, con un Client ID de Google Cloud.
+3. **Inicio de sesión (solo con correo):** en **Authentication → URL Configuration**, pon como *Site URL* `https://jeanmunoz402-jpg.github.io/larc-en-pet/` y agrégala también en *Redirect URLs*.
+   - Recomendado: en **Authentication → Emails → Magic Link**, agrega `{{ .Token }}` al cuerpo del correo. Así el correo también trae un código de 6 dígitos que se puede escribir en la pantalla de bienvenida. Es útil cuando el enlace se abre en otro navegador del celular.
 4. **Administrador:** inicia sesión una vez en la app. Luego, en el SQL Editor, ejecuta lo siguiente con tu id (lo encuentras en **Authentication → Users**):
    ```sql
    insert into public.admins (user_id) values ('TU-ID');
