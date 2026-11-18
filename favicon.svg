@@ -1,14 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 200 200">
-<rect width="200" height="200" rx="44" fill="#e6b45c"/>
-<g transform="translate(30 28) scale(0.7)">
-<ellipse cx="100" cy="24" rx="32" ry="8" fill="none" stroke="#ffffff" stroke-width="9"/>
-<ellipse cx="66" cy="66" rx="14" ry="24" transform="rotate(-30 66 66)" fill="#4a3029"></ellipse>
-<ellipse cx="134" cy="66" rx="14" ry="24" transform="rotate(30 134 66)" fill="#4a3029"></ellipse>
-<path d="M48 190 V108 A52 52 0 0 1 152 108 V190 Z" fill="#4a3029"/>
-<ellipse cx="100" cy="154" rx="24" ry="19" fill="#e6b45c"/>
-<circle cx="72" cy="126" r="9.5" fill="#e6b45c"/>
-<circle cx="89" cy="110" r="10" fill="#e6b45c"/>
-<circle cx="111" cy="110" r="10" fill="#e6b45c"/>
-<circle cx="128" cy="126" r="9.5" fill="#e6b45c"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Ícono de Larc en Pet">
+<defs>
+<linearGradient id="skyx" x1="0" y1="0" x2="0" y2="200" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffe2b8"></stop><stop offset=".55" stop-color="#f8bfc0"></stop><stop offset="1" stop-color="#c3b0ee"></stop></linearGradient>
+<radialGradient id="sunx" cx="100" cy="44" r="72" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff8e6" stop-opacity=".95"></stop><stop offset="1" stop-color="#fff8e6" stop-opacity="0"></stop></radialGradient>
+<linearGradient id="bodyx" x1="0" y1="50" x2="0" y2="190" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6a4334"></stop><stop offset="1" stop-color="#3b2420"></stop></linearGradient>
+<linearGradient id="glossx" x1="0" y1="64" x2="0" y2="96" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffffff" stop-opacity=".22"></stop><stop offset="1" stop-color="#ffffff" stop-opacity="0"></stop></linearGradient>
+<linearGradient id="goldx" x1="70" y1="0" x2="130" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f3c25c"></stop><stop offset=".5" stop-color="#fff0b8"></stop><stop offset="1" stop-color="#e3a43c"></stop></linearGradient>
+<filter id="glowx" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="3.2"></feGaussianBlur></filter>
+<filter id="shx" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#6b3b4a" flood-opacity=".35"></feDropShadow></filter>
+<clipPath id="sqx"><rect width="200" height="200" rx="46"></rect></clipPath>
+<mask id="cutx"><rect width="200" height="200" fill="#ffffff"></rect><g fill="#000000"><ellipse cx="100" cy="150" rx="22" ry="17.5"></ellipse><circle cx="74" cy="124" r="9"></circle><circle cx="90" cy="109" r="9.5"></circle><circle cx="110" cy="109" r="9.5"></circle><circle cx="126" cy="124" r="9"></circle></g></mask>
+</defs>
+<g clip-path="url(#sqx)">
+<rect width="200" height="200" fill="url(#skyx)"></rect><rect width="200" height="200" fill="url(#sunx)"></rect>
+<g filter="url(#shx)" mask="url(#cutx)">
+<ellipse cx="68" cy="70" rx="13.5" ry="22" transform="rotate(-28 68 70)" fill="url(#bodyx)"></ellipse>
+<ellipse cx="132" cy="70" rx="13.5" ry="22" transform="rotate(28 132 70)" fill="url(#bodyx)"></ellipse>
+<path d="M52 204 V112 A48 48 0 0 1 148 112 V204 Z" fill="url(#bodyx)"></path>
+<path d="M52 204 V112 A48 48 0 0 1 148 112 V204 Z" fill="url(#glossx)"></path>
 </g>
+<ellipse cx="100" cy="30" rx="30" ry="7.5" fill="none" stroke="#ffd36e" stroke-width="9" filter="url(#glowx)" opacity=".85"></ellipse>
+<ellipse cx="100" cy="30" rx="30" ry="7.5" fill="none" stroke="url(#goldx)" stroke-width="6.5"></ellipse>
+</g>
+<rect x="1" y="1" width="198" height="198" rx="45" fill="none" stroke="#ffffff" stroke-opacity=".4" stroke-width="2"></rect>
 </svg>
